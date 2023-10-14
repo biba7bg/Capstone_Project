@@ -5,7 +5,7 @@ import time
 import logging
 
 
-def get_credentials():  # creating ceredentials function
+def get_credentials():  # creating credentials function
     username = "bilyanabily"  # input("Enter your username:"4
     password = "password"  # getpass.getpass("Enter your password: ")
     return username, password
@@ -36,10 +36,14 @@ def execute_commands(ssh):  # defining menu and choices function
             # old_pid = stdout.read().decode()strip()
             # print(f"old JVM OID: {old_pid}")
         elif choice == "4":
+            sudo_password = getpass.getpass("Enter your sudo password: ")
             confirm = input(
                 "Are you sure you want to restart the server? (yes/no): ")
             if confirm.lower() == 'yes':
-                ssh.exec_command("sudo systemctl reboot")
+                stdin, stdout, stderr = ssh.exec_command("sudo -S reboot", get_pty=True)
+                stdin.write(sudo_password + "\n")
+                stdin.flush()
+                print(stdout.read().decode())
                 # here I would like to add funtion to catch what happens at the background
                 print(" Server is rebooting...")
                 exit(0)
@@ -66,7 +70,7 @@ def main():
     except paramiko.AuthenticationException:
         print("Authentication failed, please verify your credentials.")
     except paramiko.SSHException as e:
-        print(f"Error occured: {str(e)}")
+        print(f"Error occurred: {str(e)}")
     finally:
         ssh.close
 
