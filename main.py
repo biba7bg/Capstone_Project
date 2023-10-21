@@ -73,17 +73,20 @@ def windows_server_menu():
 def linux_service_choice():
     # print("I am linux services choice function, and I am under construction")
     # This is linux service menu coice
-    print("1. Display all running services\n2. JVM restart\n3. Previous menu\n4. Quit")
+    print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. Previous menu\n5. Quit")
     choice = input(" Please enter your service choice ")
     if choice == "1":
         print("Az sam option 1 in linux_service_choice")
         menuoptions.linux_allservices()
     elif choice == "2":
-        print("Az sam option 2 in linux_service_choice")
-        menuoptions.linux_JVM()
+        print("Az sam option 3 in linux_service_choice")
+        menuoptions.linux_last5_reboots()
     elif choice == "3":
-        return linux_server_menu()
+        print("Az sam option 3 in linux_service_choice")
+        menuoptions.linux_JVM()
     elif choice == "4":
+        return linux_server_menu()
+    elif choice == "5":
         exit(0)
     else:
         logging.error("Invalid choice in service choice menu.")
