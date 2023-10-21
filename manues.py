@@ -36,14 +36,14 @@ def execute_commands(ssh):  # defining menu and choices function
             # old_pid = stdout.read().decode()strip()
             # print(f"old JVM OID: {old_pid}")
         elif choice == "4":
-            #sudo_password = getpass.getpass("Enter your sudo password: ")
+            # sudo_password = getpass.getpass("Enter your sudo password: ")
             confirm = input(
                 "Are you sure you want to restart the server? (yes/no): ")
             if confirm.lower() == 'yes':
                 ssh.exec_command("sudo  /sbin/reboot", get_pty=True)
-                #stdin.write(sudo_password + "\n")
-                #stdin.flush()
-                #print(stdout.read().decode())
+                # stdin.write(sudo_password + "\n")
+                # stdin.flush()
+                # print(stdout.read().decode())
                 # here I would like to add funtion to catch what happens at the background
                 print(" Server is rebooting...")
                 exit(0)
