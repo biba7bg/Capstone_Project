@@ -1,8 +1,10 @@
 import unittest
+import main
 
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
+class TestAbstrUtility(unittest.TestCase):
+
+    def test_main_menu(self):
         self.assertEqual(True, False)  # add assertion here
 
 
