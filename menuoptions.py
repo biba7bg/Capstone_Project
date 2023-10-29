@@ -1,17 +1,19 @@
 import time
 import sys
 import getpass
+import datetime
 import os
-import maskpass
 import paramiko
+
 import main
-import shell_cmd
 
 
 curr_date = datetime.datetime.now()
 port = 22
 login_wait = 5
 server_name = "192.168.1.126"  # input("Enter server name or IP address: ")
+
+# error logging function
 
 
 def errorexit(str):
@@ -20,6 +22,7 @@ def errorexit(str):
     print("Exiting...")
     main.logging.shutdown()
     os._exit(1)
+
 
 # functions for server options
 
@@ -106,8 +109,7 @@ def linux_server_reboot():
 
 
 def windows_server_reboot():
-    # This linux  server reboot function
-    server_name = input("Enter server name: ")
+    # This windows  server reboot function
     print("1. Windows Restart\n2. Windows Shutdown\n3. Previus Menu\n4. Quit")
     choice = input("Enter desired action: ")
     if choice == "1":
@@ -128,14 +130,13 @@ def windows_server_reboot():
 
 def linux_reboot():
     print("I am linux reboot function")
-    shell_cmd.ssh_reboot_if_root()
 
 
 def linux_shutdown():
     print("I am linux shutdown function")
     # Ask the user for connection details
     server_name = "192.168.1.126"  # input(" Enter server name")
-    username, password = get_credentials()
+    username, password = main.get_credentials()
 
     # Establish an SSH client session
     ssh_client = paramiko.SSHClient()
@@ -151,81 +152,6 @@ def linux_shutdown():
 
     print(f"Sent shutdown command to server {server_name}.")
 
-
-# Functions for services option
-def linux_allservices():
-    print("I am linux server all services dislay function")
-    server_name = "192.168.1.126"
-    username, password = get_credentials()
-
-    try:
-        ssh_client = paramiko.SSHClient()
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh_client.connect(server_name, username=username, password=password)
-        stdin, stdout, stderr = ssh_client.exec_command(
-            "systemctl --type=service")
-        services = str(stdout.read().decode('utf-8'))
-        print(services)
-    except paramiko.AuthenticationException:
-        print(" Authentication failed, please verify your credentials.")
-    except paramiko.SSHException as e:
-        print(f"Unable to establish SSH connection: {str(e)}")
-    except Exception as e:
-        print(f"Error occured: {str(e)}")
-    finally:
-        ssh_client.close()
-    return main.linux_service_choice()
-
-
-def linux_last5_reboots():
-    print("I am linux server all services dislay function")
-    server_name = "192.168.1.126"
-    username, password = get_credentials()
-
-    try:
-        ssh_client = paramiko.SSHClient()
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh_client.connect(server_name, username=username, password=password)
-        stdin, stdout, stderr = ssh_client.exec_command(
-            "uptime && last reboot | head -n 5")
-        services = str(stdout.read().decode('utf-8'))
-        print(services)
-    except paramiko.AuthenticationException:
-        print(" Authentication failed, please verify your credentials.")
-    except paramiko.SSHException as e:
-        print(f"Unable to establish SSH connection: {str(e)}")
-    except Exception as e:
-        print(f"Error occured: {str(e)}")
-    finally:
-        ssh_client.close()
-    return main.linux_service_choice()
-
-
-def linux_JVM():
-    print("I am linux JVM restart function")
-
-
-def linx_resources():
-    print(" I am linux resources display")
-
-
-def windows_allservices():
-    print("I am all windows services display")
-    server_name = input("Enter server name: ")
-    password, username = get_credentials()
-    # The PowerShell command to initiate a remote session and list running services
-    p = subprocess.Popen(["powershell.exe", "Get-ADComputer " + server_name +
-                         " | Select-Object Name"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-    stdout = sys.stdout
-    p.communicate()
-
-
-def windows_IIS():
-    print("I am IIS restart")
-
-
-def windows_service_input():
-    print(" I am windows service input display")
 
 # Network Meni functions
 
