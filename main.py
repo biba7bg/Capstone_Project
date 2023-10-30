@@ -11,9 +11,11 @@ log = logging.getLogger("abstrutility.log")
 
 
 def get_credentials():
+    # This Function defines the connection information, server name, username and password
+    server_name = input("Enter Server Name: ")
     username = input("Enter your username: ")
     password = getpass.getpass("Enter your password: ")
-    return username.lower(), password
+    return server_name, username.lower(), password
 
 
 # SERVERS MENU FUNCTIONS
@@ -63,7 +65,7 @@ def linux_server_menu():
     print("1. Linux Server Reboot\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
-        menuoptions.linux_server_reboot()
+        menuoptions.linux_server_interaction()
     elif choice == "2":
         linux_service_choice()
     elif choice == "3":

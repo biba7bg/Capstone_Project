@@ -13,7 +13,6 @@ import services_options
 curr_date = datetime.datetime.now()
 port = 22
 login_wait = 5
-# server_name = "192.168.1.126"  # input("Enter server name or IP address: ")
 
 # error logging function
 
@@ -29,8 +28,8 @@ def errorexit(str):
 # WINDOWS SERVER RESTART FUNCTION
 def windows_server_reboot(session):
     # functions which intioates windows server restart
-    reboot_cmd = "shutdown /r /t 0"
-    result = session.run_cmd(reboot_cmd)
+    reboot_command = "shutdown /r /t 0"
+    result = session.run_cmd(reboot_command)
     return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
 
 # WINDOWS SERVER SHUTDOWN FUNCTION
@@ -38,19 +37,19 @@ def windows_server_reboot(session):
 
 def windows_server_shutdown(session):
     # functions which intioates windows server shutdown
-    shutdown_cmd = "shutdown /s /t 0"
-    result = session.run_cmd(shutdown_cmd)
+    shutdown_command = "shutdown /s /t 0"
+    result = session.run_cmd(shutdown_command)
     return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
 
 # LINUX SERVER MENU FUNCTIONS
 
 
-def linux_server_reboot():
+def linux_server_interaction():
     # This linux  server reboot function
     print("1. Linux Restart\n2. Linux Shutdown\n3. Previous Menu\n4. Quit")
     choice = input("Enter desired action: ")
     if choice == "1":
-        username, password = main.get_credentials()
+        server_name, username, password = main.get_credentials()
         confirm = input(
             "Are you sure you want to restart the server? (yes/no): ")
         if confirm.lower() == "yes":
@@ -128,23 +127,29 @@ def linux_server_reboot():
 
 def linux_shutdown():
     print("I am linux shutdown function")
-    # Ask the user for connection details
-    server_name = "192.168.1.126"  # input(" Enter server name")
-    username, password = main.get_credentials()
+    # sudo_password = getpass.getpass("Enter your sudo password: ")
+    confirm = input(
+        "Are you sure you want to restart the server? (yes/no): ")
+    if confirm.lower() == 'yes':
+        server_name, username, password = main.get_credentials()
+        # Establish an SSH client session
+        ssh_client = paramiko.SSHClient()
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_client.connect(server_name, username=username, password=password)
+        stdin, stdout, stderr = ssh_client.exec_command(
+            "sudo -i /sbin/shutdown -now", get_pty=True)
+        stdin.write(password + "\n")
+        stdin.flush()
+        print(stdout.read().decode())
+        # here I would like to add funtion to catch what happens at the background
+        print(" Server is rebooting...")
 
-    # Establish an SSH client session
-    ssh_client = paramiko.SSHClient()
-    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh_client.connect(server_name,
-                       username=username, password=password)
-
-    # Execute the shutdown command
-    ssh_client.exec_command('sudo shutdown -h now')
-
-    # Close the SSH client session
-    ssh_client.close()
-
-    print(f"Sent shutdown command to server {server_name}.")
+        # Close the SSH client session
+        ssh_client.close()
+        print(f"Sent shutdown command to server {server_name}.")
+        # Execute the shutdown command
+        # ssh_client.exec_command('sudo shutdown -h now')
+        return main.linux_server_menu()
 
 
 # WINDOWS SERVER MENU FUNCTIONS
@@ -160,7 +165,7 @@ def windows_server_interaction():
             # Thsi is where user s asked to put the server name/IP for the server which needs a restart
             server_name = input(
                 "Enter the remote server IP or hostname: ").strip()
-            username, password = main.get_credentials()
+            server_name, username, password = main.get_credentials()
             # session is calling create sesssion function which is defined in service_option file
             session = services_options.create_session(
                 server_name, username, password)
@@ -177,9 +182,9 @@ def windows_server_interaction():
             "Are you sure you want to restart the server? (yes/no): ")
         if confirm.lower() == "yes":
             # Thsi is where user s asked to put the server name/IP for the server which needs a restart
-            server_name = input(
-                "Enter the remote server IP or hostname: ").strip()
-            username, password = main.get_credentials()
+            # server_name = input(
+            # "Enter the remote server IP or hostname: ").strip()
+            server_name, username, password = main.get_credentials()
             session = services_options.create_session(
                 server_name, username, password)
             status_code, stdout, stderr = windows_server_shutdown(session)

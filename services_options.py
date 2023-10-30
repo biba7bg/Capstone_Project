@@ -8,19 +8,7 @@ import menuoptions
 
 # rempte windows function wich is connecting remote windows host
 def create_session(server_name, username, password, port=5985, server_cert_validation='ignore'):
-    """
-    Creates and returns  WinRM session to a Windows server.
-
-    Parameters:
-    - host: The IP address or hostname of the target Windows server.
-    - username: Username for authentication.
-    - password: Password for authentication.
-    - port: Port for the WinRM service (default is 5985 for HTTP).
-    - server_cert_validation: Strategy for server certificate validation ('ignore' by default).
-
-    Returns:
-    - WinRM Session object.
-    """
+    # this functions is for creating remote connection to windows server
     session_url = f"http://{server_name}:{port}/wsman"
     session = winrm.Session(
         session_url,
@@ -35,8 +23,8 @@ def create_session(server_name, username, password, port=5985, server_cert_valid
 
 def linux_allservices():
     print("I am linux server all services dislay function")
-    server_name = "192.168.1.126"
-    username, password = main.get_credentials()
+    server_name = input("Enter server name: ")
+    server_name, username, password = main.get_credentials()
 
     try:
         ssh_client = paramiko.SSHClient()
@@ -59,8 +47,8 @@ def linux_allservices():
 
 def linux_last5_reboots():
     print("I am linux server all services dislay function")
-    server_name = "192.168.1.126"
-    username, password = main.get_credentials()
+    # server_name = "192.168.1.126"
+    server_name, username, password = main.get_credentials()
 
     try:
         ssh_client = paramiko.SSHClient()
@@ -89,17 +77,15 @@ def linux_JVM():
 def linx_resources():
     print(" I am linux resources display")
 
- # Windows OS, functions for services option
 
 # WINDOWS OS SERVICES FUNCTIONS
-
 
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
 
     # Get connection details from the user
-    server_name = input("Enter the remote server IP: ").strip()
-    username, password = main.get_credentials()
+    # server_name = input("Enter the remote server IP: ").strip()
+    server_name, username, password = main.get_credentials()
 
     # Create a WinRM session
     session = create_session(server_name, username, password)
@@ -124,8 +110,8 @@ def windows_allservices():
 def windows_IIS():
     print("I am IIS restart")
     # Get connection details from the user
-    server_name = input("Enter the remote server IP: ").strip()
-    username, password = main.get_credentials()
+    # server_name = input("Enter the remote server IP: ").strip()
+    server_name, username, password = main.get_credentials()
 
     # Create a WinRM session
     session = winrm.Session(
