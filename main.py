@@ -55,6 +55,8 @@ def server_os():
         print(" Invalid os choice")
     return int(choice)
 
+# LINUX SERVER MENU FUNCTIONS
+
 
 def linux_server_menu():
     # this is server menu, called form mein menu, which will give us server option
@@ -73,13 +75,15 @@ def linux_server_menu():
         print("Invalid choice.")
     return int(choice)
 
+# WINDOWS SERVER MENU FUNCTIONS
+
 
 def windows_server_menu():
     # This the windows menu function, where user can shoose what windows actions he can preform
-    print("1. Windows Server Reboot\n2. Windows Services Menu\n3. Previous Menu\n4. Quit")
+    print("1. Windows Server Menu\n2. Windows Services Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
-        menuoptions.windows_server_reboot()
+        menuoptions.windows_server_interaction()
     elif choice == "2":
         windows_service_choice()
     elif choice == "3":

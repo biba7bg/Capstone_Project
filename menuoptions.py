@@ -6,12 +6,14 @@ import os
 import paramiko
 
 import main
+import shell_cmd
+import services_options
 
 
 curr_date = datetime.datetime.now()
 port = 22
 login_wait = 5
-server_name = "192.168.1.126"  # input("Enter server name or IP address: ")
+# server_name = "192.168.1.126"  # input("Enter server name or IP address: ")
 
 # error logging function
 
@@ -24,7 +26,23 @@ def errorexit(str):
     os._exit(1)
 
 
-# functions for server options
+# WINDOWS SERVER RESTART FUNCTION
+def windows_server_reboot(session):
+    # functions which intioates windows server restart
+    reboot_cmd = "shutdown /r /t 0"
+    result = session.run_cmd(reboot_cmd)
+    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+
+# WINDOWS SERVER SHUTDOWN FUNCTION
+
+
+def windows_server_shutdown(session):
+    # functions which intioates windows server shutdown
+    shutdown_cmd = "shutdown /s /t 0"
+    result = session.run_cmd(shutdown_cmd)
+    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+
+# LINUX SERVER MENU FUNCTIONS
 
 
 def linux_server_reboot():
@@ -108,30 +126,6 @@ def linux_server_reboot():
     return int(choice)
 
 
-def windows_server_reboot():
-    # This windows  server reboot function
-    print("1. Windows Restart\n2. Windows Shutdown\n3. Previus Menu\n4. Quit")
-    choice = input("Enter desired action: ")
-    if choice == "1":
-        print("write code for windows server reboot")
-    elif choice == "2":
-        print("write code for windows server shutdown")
-    elif choice == "3":
-        return main.windows_server_menu()
-    elif choice == "4.":
-        exit(0)
-    else:
-        main.logging.error("Invalid server menu")
-        print("Invalid choice")
-    return int(choice)
-
-
-# Reboot functions
-
-def linux_reboot():
-    print("I am linux reboot function")
-
-
 def linux_shutdown():
     print("I am linux shutdown function")
     # Ask the user for connection details
@@ -153,9 +147,59 @@ def linux_shutdown():
     print(f"Sent shutdown command to server {server_name}.")
 
 
+# WINDOWS SERVER MENU FUNCTIONS
+def windows_server_interaction():
+    # This windows  server menu function, which displays the server options given to the user
+    print("1. Windows Restart\n2. Windows Shutdown\n3. Previus Menu\n4. Quit")
+    choice = input("Enter desired action: ")
+    if choice == "1":
+        # Make confurmation thaat user would like to proceed with the choice
+        confirm = input(
+            "Are you sure you want to restart the server? (yes/no): ")
+        if confirm.lower() == "yes":
+            # Thsi is where user s asked to put the server name/IP for the server which needs a restart
+            server_name = input(
+                "Enter the remote server IP or hostname: ").strip()
+            username, password = main.get_credentials()
+            # session is calling create sesssion function which is defined in service_option file
+            session = services_options.create_session(
+                server_name, username, password)
+            status_code, stdout, stderr = windows_server_reboot(session)
+            # this print is showning execution status if status is 0, that mean the command has been executed successfuly
+            print(f"Command executed with status code: {status_code}")
+            main.log.error(f"Output: {stdout}")
+        if stderr:
+            print(f"Error: {stderr}")
+            print("write code for windows server reboot")
+            return windows_server_reboot()
+    elif choice == "2":
+        confirm = input(
+            "Are you sure you want to restart the server? (yes/no): ")
+        if confirm.lower() == "yes":
+            # Thsi is where user s asked to put the server name/IP for the server which needs a restart
+            server_name = input(
+                "Enter the remote server IP or hostname: ").strip()
+            username, password = main.get_credentials()
+            session = services_options.create_session(
+                server_name, username, password)
+            status_code, stdout, stderr = windows_server_shutdown(session)
+            print(f"Command executed with status code: {status_code}")
+            print(f"Output: {stdout}")
+        if stderr:
+            print(f"Error: {stderr}")
+            print("write code for windows server reboot")
+            return windows_server_reboot()
+    elif choice == "3":
+        return main.windows_server_menu()
+    elif choice == "4.":
+        exit(0)
+    else:
+        main.logging.error("Invalid server menu")
+        print("Invalid choice")
+    return int(choice)
+
+
 # Network Meni functions
-
-
 def bulkip_scan():
     print("I am Bulk IP scanning function and I am under construction")
 
