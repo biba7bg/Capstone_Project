@@ -80,6 +80,7 @@ def linx_resources():
 
 # WINDOWS OS SERVICES FUNCTIONS
 
+
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
 
@@ -92,10 +93,10 @@ def windows_allservices():
 
     # PowerShell command to get all running services
     # get_running_services_cmd = 'Get-Service | Where-Object { $_.Status -eq "Running" } | Format-Table DisplayName, Status -AutoSize'
-    get_running_services_cmd = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
+    get_services = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
 
     # Execute the command on the remote server
-    response = session.run_ps(get_running_services_cmd)
+    response = session.run_ps(get_services)
 
     # Check the output and error
     if response.status_code == 0:
@@ -108,20 +109,22 @@ def windows_allservices():
 
 
 def windows_IIS():
+
     print("I am IIS restart")
     # Get connection details from the user
     # server_name = input("Enter the remote server IP: ").strip()
     server_name, username, password = main.get_credentials()
 
     # Create a WinRM session
-    session = winrm.Session(
-        f"http://{server_name}:5985/wsman", auth=(username, password), transport='ntlm')
+    session = create_session()  # winrm.Session(
+    # f"http://{server_name}:5985/wsman", auth=(username, password), transport='ntlm')
 
     # PowerShell command to restart IIS
-    restart_iis_cmd = 'iisreset /restart'
+    restart_iis = 'iisreset /restart'
+    # this is to be tested for improved IIS restart aproach 'iisreset /stop /timeout:60 |taskkill /F /FI "SERVICES eq was" | iisreset /start'
 
     # Execute the command on the remote server
-    response = session.run_ps(restart_iis_cmd)
+    response = session.run_ps(restart_iis)
 
     # Check the output and error
     if response.status_code == 0:
@@ -131,6 +134,14 @@ def windows_IIS():
         print("Failed to restart IIS.")
         print("Error:", response.std_err.decode())
         return main.windows_server_menu()
+
+
+def windows_app_pools():
+    session = create_session()
+    app_pool_services = 'Import-Module WebAdministration; Get-WebAppPool | Select-Onject -ExpandProperty Name'
+    output = session.run_ps(
+        app_pool_services).std_out.decode().strip().splitlines()
+    return output
 
 
 def windows_service_input():

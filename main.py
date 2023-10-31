@@ -22,13 +22,14 @@ def get_credentials():
 def main_menu():
     # This is AbsrUtility main  menu
     print("\nMain menu:")
-    print("1. Server\n2. Network\n3. Exit")
+    print("1. Server Menu\n2. Network Menu\n3. Exit")
     choice = input(" \nPlease chose and option: ")
     if choice == "1":
         server_os()
     elif choice == "2":
         network_menu()
     elif choice == "3":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit()
     else:
         log.error("Invalid choice in main  menu.")
@@ -38,7 +39,8 @@ def main_menu():
 
 def server_os():
     # This functions makes user to define which OS he is going to work with
-    print("Choose server type:\n1. Linux\n2. Windows\n3. Previous Menu\n4. Quit")
+    print("Server OS Menu")
+    print("Choose server type:\n1. Linux Server Menu\n2. Windows Server Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter the server type:")
     if choice == "1":
         # choice of linux server
@@ -50,6 +52,7 @@ def server_os():
         # return to main menu
         return main_menu()
     elif choice == "4":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         # quit the program
         exit(0)
     else:
@@ -62,7 +65,7 @@ def server_os():
 
 def linux_server_menu():
     # this is server menu, called form mein menu, which will give us server option
-    print("1. Linux Server Reboot\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
+    print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
         menuoptions.linux_server_interaction()
@@ -71,6 +74,7 @@ def linux_server_menu():
     elif choice == "3":
         return server_os()
     elif choice == "4":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
@@ -82,7 +86,7 @@ def linux_server_menu():
 
 def windows_server_menu():
     # This the windows menu function, where user can shoose what windows actions he can preform
-    print("1. Windows Server Menu\n2. Windows Services Menu\n3. Previous Menu\n4. Quit")
+    print("1. Windows Server Options Menu\n2. Windows Services Options Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
         menuoptions.windows_server_interaction()
@@ -91,6 +95,7 @@ def windows_server_menu():
     elif choice == "3":
         return server_os()
     elif choice == "4":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
@@ -115,6 +120,7 @@ def linux_service_choice():
     elif choice == "4":
         return linux_server_menu()
     elif choice == "5":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
@@ -126,7 +132,7 @@ def linux_service_choice():
 
 def windows_service_choice():
     # This is windows service menu choices function
-    print("1. Display all running services\n2. IIS restart\n3. Input Service name\n4. Previous Menu\n5. Quit")
+    print("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Choose Service name\n5. Previous Menu\n6. Quit")
     choice = input("Enter an option: ")
     if choice == "1":
         print("I am  option 1 in windows_service_choice")
@@ -137,10 +143,14 @@ def windows_service_choice():
         services_options.windows_IIS()
     elif choice == "3":
         print("I am  option 3 in windows_service_choice")
-        services_options.windows_service_input()
+        services_options.windows_app_pools()
     elif choice == "4":
-        return windows_server_menu()
+        print("I am  option 4 in windows_service_choice")
+        services_options.windows_service_input()
     elif choice == "5":
+        return windows_server_menu()
+    elif choice == "6":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
@@ -168,6 +178,7 @@ def network_menu():
         main_menu()
     elif choice == "5":
         print("I am option 5 in network menu function")
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")

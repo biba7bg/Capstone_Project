@@ -6,7 +6,6 @@ import os
 import paramiko
 
 import main
-import shell_cmd
 import services_options
 
 
@@ -118,6 +117,7 @@ def linux_server_interaction():
     elif choice == "3":
         return main.linux_server_menu()
     elif choice == "4":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         main.logging.debug("Invalid server menu")
@@ -163,8 +163,8 @@ def windows_server_interaction():
             "Are you sure you want to restart the server? (yes/no): ")
         if confirm.lower() == "yes":
             # Thsi is where user s asked to put the server name/IP for the server which needs a restart
-            server_name = input(
-                "Enter the remote server IP or hostname: ").strip()
+            # server_name = input(
+            # "Enter the remote server IP or hostname: ").strip()
             server_name, username, password = main.get_credentials()
             # session is calling create sesssion function which is defined in service_option file
             session = services_options.create_session(
@@ -197,6 +197,7 @@ def windows_server_interaction():
     elif choice == "3":
         return main.windows_server_menu()
     elif choice == "4.":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
         main.logging.error("Invalid server menu")
