@@ -1,13 +1,11 @@
 import paramiko
 import winrm
-import getpass
 
 import main
-import menuoptions
 
 
 # rempte windows function wich is connecting remote windows host
-def create_session(server_name, username, password, port=5985, server_cert_validation='ignore'):
+def windows_session(server_name, username, password, port=5985, server_cert_validation='ignore'):
     # this functions is for creating remote connection to windows server
     session_url = f"http://{server_name}:{port}/wsman"
     session = winrm.Session(

@@ -36,17 +36,19 @@ def execute_commands(ssh):  # defining menu and choices function
             # old_pid = stdout.read().decode()strip()
             # print(f"old JVM OID: {old_pid}")
         elif choice == "4":
-            # sudo_password = getpass.getpass("Enter your sudo password: ")
+            sudo_password = getpass.getpass("Enter your sudo password: ")
             confirm = input(
                 "Are you sure you want to restart the server? (yes/no): ")
             if confirm.lower() == 'yes':
-                ssh.exec_command("sudo  /sbin/reboot", get_pty=True)
-                # stdin.write(sudo_password + "\n")
-                # stdin.flush()
-                # print(stdout.read().decode())
+                stdin, stdout, stderr = ssh.exec_command(
+                    "sudo -i /sbin/shutdown", get_pty=True)
+                stdin.write(sudo_password + "\n")
+                stdin.flush()
+                print(stdout.read().decode())
                 # here I would like to add funtion to catch what happens at the background
                 print(" Server is rebooting...")
-                exit(0)
+                # ssh.close()
+                break
         elif choice == "5":
             print("not ready yet")
         elif choice == "6":
@@ -58,11 +60,12 @@ def execute_commands(ssh):  # defining menu and choices function
 
 def main():
     hostname = "192.168.1.126"  # input(" Enter the server ip or host name: ")
+    port = 22
     username, password = get_credentials()
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname, username=username, password=password)
+        ssh.connect(hostname, port=port, username=username, password=password)
 
         print(f"Connected to host{hostname} successfully!")
         execute_commands(ssh)

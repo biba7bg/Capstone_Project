@@ -1,6 +1,4 @@
 import time
-import sys
-import getpass
 import datetime
 import os
 import paramiko
