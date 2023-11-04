@@ -23,7 +23,7 @@ def main_menu():
     # This is AbsrUtility main  menu
     print("\nMain menu:")
     print("1. Server Menu\n2. Network Menu\n3. Exit")
-    choice = input(" \nPlease chose and option: ")
+    choice = input(" \nPlease chose an option: ")
     if choice == "1":
         server_os()
     elif choice == "2":
@@ -64,7 +64,7 @@ def server_os():
 
 
 def linux_server_menu():
-    # this is server menu, called form mein menu, which will give us server option
+    # this is linux server menu, which will present the user with linux options
     print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
@@ -85,7 +85,7 @@ def linux_server_menu():
 
 
 def windows_server_menu():
-    # This the windows menu function, where user can shoose what windows actions he can preform
+    # this is windows server menu, which will present the user with windows options
     print("1. Windows Server Options Menu\n2. Windows Services Options Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":

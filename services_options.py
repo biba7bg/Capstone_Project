@@ -21,7 +21,6 @@ def windows_session(server_name, username, password, port=5985, server_cert_vali
 
 def linux_allservices():
     print("I am linux server all services dislay function")
-    server_name = input("Enter server name: ")
     server_name, username, password = main.get_credentials()
 
     try:

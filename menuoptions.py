@@ -1,7 +1,9 @@
-import time
+import sys
 import datetime
 import os
 import paramiko
+import getpass
+from contextlib import contextmanager
 
 import main
 import services_options
@@ -10,6 +12,17 @@ import services_options
 curr_date = datetime.datetime.now()
 port = 22
 login_wait = 5
+
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout
 
 # error logging function
 
@@ -47,6 +60,7 @@ def linux_server_interaction():
     choice = input("Enter desired action: ")
     if choice == "1":
         server_name, username, password = main.get_credentials()
+        sudo_password = getpass.getpass("Enter your sudo password: ")
         confirm = input(
             "Are you sure you want to restart the server? (yes/no): ")
         if confirm.lower() == "yes":
@@ -65,49 +79,15 @@ def linux_server_interaction():
                 print(f"Error occured: {str(e)}")
                 errorexit("Connection Failed {} ({})".format(
                     str(e), server_name))
-
-            channel = ssh_client.invoke_shell()
-            time.sleep(login_wait)
-            channel.send("\n\n")  # send first command
-            time.sleep(2)
-            resp = channel.recv(9999)
-            output = resp.decode("ascii")
-            print("{}\n".format(output))
-            if "{}@".format(username) not in output:
-                ssh_client.close()
-                main.log.error(
-                    "Command prompt not found! Connection closed to {}".format(server_name))
-                print("Command prompt not found! Connection closed to {}".format(
-                    server_name))
-
-            channel.send("sudo -i\n")   # second commmand in
-            time.sleep(2)
-            resp = channel.recv(9999)
-            output = resp.decode("ascii")
-            print("{}\n".format(output))
-            if "{}@".format(username) not in output:
-                ssh_client.close()
-                main.log.error(
-                    "Command prompt not found! Connection closed to {}".format(server_name))
-                print("Command prompt not found! Connection closed to {}".format(
-                    server_name))
-                errorexit("Connection failed! ({})".format(server_name))
-
-            main.log.info("Sending password")
-            channel.send("{}\n".format(password))
-            time.sleep(2)
-            resp = channel.recv(9999)
-            output = resp.decode("ascii")
-            print("{}\n".format(output))
-            if "root@".format(username) not in output:
-                ssh_client.close()
-                main.log.error(
-                    "Command prompt not found! Connection closed to {}".format(server_name))
-                print("Command prompt not found! Connection closed to {}".format(
-                    server_name))
-                errorexit("Connection failed! ({})".format(server_name))
-            else:
-                channel.send("cd /var\n".format(output))
+        stdin, stdout, stderr = ssh_client.exec_command(
+            "sudo -i /sbin/reboot", get_pty=True)
+        stdin.write(sudo_password + "\n")
+        stdin.flush()
+        with suppress_stdout():
+            print(stdout.read().decode())
+        # here I would like to add funtion to catch what happens at the background
+        print(" Server is rebooting...")
+        return linux_server_interaction()
 
     elif choice == "2":
         print("write code for  linux  server shutdown")
