@@ -1,5 +1,6 @@
 import logging
 import getpass
+
 import menuoptions
 import services_options
 
@@ -30,23 +31,25 @@ def main_menu():
         network_menu()
     elif choice == "3":
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
-        exit()
+        exit(0)
     else:
         log.error("Invalid choice in main  menu.")
         print(" Invalid choice.")
     return int(choice)
+
+# SERVERS Menu
 
 
 def server_os():
     # This functions makes user to define which OS he is going to work with
     print("Server OS Menu")
     print("Choose server type:\n1. Linux Server Menu\n2. Windows Server Menu\n3. Previous Menu\n4. Quit")
-    choice = input(" Enter the server type:")
+    choice = input("Enter the server type:")
     if choice == "1":
-        # choice of linux server
+        # if choice 1 is selected, the program calls  linux server menu function
         linux_server_menu()
     elif choice == "2":
-        # choice of windows server
+        # if choice 1 is selected, the program calls  windowsserver menu function
         windows_server_menu()
     elif choice == "3":
         # return to main menu
@@ -64,16 +67,21 @@ def server_os():
 
 
 def linux_server_menu():
-    # this is linux server menu, which will present the user with linux options
+    # this is linux server menu function, which will present the user with linux options
+    print("Linux Server Menu")
     print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
+        # choice 1 takes the user to the linux server interaction function, which is located in menuoptions.py file
         menuoptions.linux_server_interaction()
     elif choice == "2":
+        # choice 2 takes the user to the linux services choice function
         linux_service_choice()
     elif choice == "3":
+        # choice 3 takes user to the previous menu
         return server_os()
     elif choice == "4":
+        # choice 4 exits the program
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
@@ -85,16 +93,20 @@ def linux_server_menu():
 
 
 def windows_server_menu():
-    # this is windows server menu, which will present the user with windows options
+    # this is windows server menu function, which will present the user with windows options
     print("1. Windows Server Options Menu\n2. Windows Services Options Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
+        # choice 1 takes the user to the windows server interaction function, which is located in menuoptions.py file
         menuoptions.windows_server_interaction()
     elif choice == "2":
+        # choice 2 takes the user to the windows services choice function
         windows_service_choice()
     elif choice == "3":
+        # choice 3 takes user to the previous menu
         return server_os()
     elif choice == "4":
+        # choice 4 exits the program
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
@@ -109,17 +121,19 @@ def linux_service_choice():
     print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. Previous Menu\n5. Quit")
     choice = input(" Please enter your service choice: ")
     if choice == "1":
-        # this choice takes the user to call all running services, the function for this is in the services_option  file
+        # this choice takes the user to call all running services, the function for this is in the services_option.py file
         services_options.linux_allservices()
     elif choice == "2":
-        # this choice takes the user to call last 5 server reboots, the function for this is in the services_option  file
+        # this choice takes the user to call last 5 server reboots, the function for this is in the services_option.py  file
         services_options.linux_last5_reboots()
     elif choice == "3":
-        # this choice takes the user to restart JVM, the function for this is in the services_option  file
+        # this choice takes the user to restart JVM, the function for this is in the services_option.py  file
         services_options.linux_JVM()
     elif choice == "4":
+        # choice 4 takes user to the previous menu
         return linux_server_menu()
     elif choice == "5":
+        # choice 5 exits the program
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
@@ -132,7 +146,7 @@ def linux_service_choice():
 
 def windows_service_choice():
     # This is windows service menu choices function
-    print("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Choose Service name\n5. Previous Menu\n6. Quit")
+    print("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Choose of Service\n5. Previous Menu\n6. Quit")
     choice = input("Enter an option: ")
     if choice == "1":
         print("I am  option 1 in windows_service_choice")
@@ -150,6 +164,7 @@ def windows_service_choice():
     elif choice == "5":
         return windows_server_menu()
     elif choice == "6":
+        # choice 6 exits the program
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
@@ -177,7 +192,7 @@ def network_menu():
         print("I am option 4 in network menu function")
         main_menu()
     elif choice == "5":
-        print("I am option 5 in network menu function")
+        # choice 5 exits the program
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:

@@ -86,7 +86,7 @@ def windows_allservices():
     server_name, username, password = main.get_credentials()
 
     # Create a WinRM session
-    session = create_session(server_name, username, password)
+    session = windows_session(server_name, username, password)
 
     # PowerShell command to get all running services
     # get_running_services_cmd = 'Get-Service | Where-Object { $_.Status -eq "Running" } | Format-Table DisplayName, Status -AutoSize'
@@ -106,14 +106,13 @@ def windows_allservices():
 
 
 def windows_IIS():
-
     print("I am IIS restart")
     # Get connection details from the user
     # server_name = input("Enter the remote server IP: ").strip()
     server_name, username, password = main.get_credentials()
 
     # Create a WinRM session
-    session = create_session()  # winrm.Session(
+    session = windows_session()  # winrm.Session(
     # f"http://{server_name}:5985/wsman", auth=(username, password), transport='ntlm')
 
     # PowerShell command to restart IIS
@@ -134,7 +133,7 @@ def windows_IIS():
 
 
 def windows_app_pools():
-    session = create_session()
+    session = windows_session()
     app_pool_services = 'Import-Module WebAdministration; Get-WebAppPool | Select-Onject -ExpandProperty Name'
     output = session.run_ps(
         app_pool_services).std_out.decode().strip().splitlines()
