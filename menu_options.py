@@ -1,5 +1,4 @@
 import sys
-import datetime
 import os
 import paramiko
 import getpass
@@ -9,8 +8,6 @@ import main
 import services_options
 
 
-curr_date = datetime.datetime.now()
-login_wait = 5
 
 # this function is suppresing the print out to the screen, this way when sudo password is entered, it doesn't show on the screen
 @contextmanager
@@ -36,14 +33,14 @@ def errorexit(str):
 
 # WINDOWS SERVER RESTART FUNCTION
 def windows_server_reboot(session):
-    # functions which intioates windows server restart
+    # functions which intiates windows server restart
     reboot_command = "shutdown /r /t 0"
     result = session.run_cmd(reboot_command)
     return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
 
 # WINDOWS SERVER SHUTDOWN FUNCTION
 def windows_server_shutdown(session):
-    # functions which intioates windows server shutdown
+    # functions which intiates windows server shutdown
     shutdown_command = "shutdown /s /t 0"
     result = session.run_cmd(shutdown_command)
     return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
@@ -68,12 +65,10 @@ def linux_server_interaction():
             except paramiko.AuthenticationException:
                 ssh_client
                 print("Bad Password! Connectionclose to {}".format(server_name))
-                errorexit(
-                    "Bad password, connection Failed! ({})".format(server_name))
+                errorexit("Bad password, connection Failed! ({})".format(server_name))
             except Exception as e:
                 print(f"Error occured: {str(e)}")
-                errorexit("Connection Failed {} ({})".format(
-                    str(e), server_name))
+                errorexit("Connection Failed {} ({})".format(str(e), server_name))
         stdin, stdout, stderr = ssh_client.exec_command("sudo -i /sbin/reboot", get_pty=True)
         stdin.write(sudo_password + "\n")
         stdin.flush()
@@ -92,7 +87,7 @@ def linux_server_interaction():
         exit(0)
     else:
         main.logging.debug("Invalid server menu")
-        print("Invalid choice")
+        errorexit("Wrong choice of the menu.")
     return int(choice)
 
 
@@ -115,8 +110,7 @@ def linux_shutdown():
                     "Bad password, connection Failed! ({})".format(server_name))
         except Exception as e:
                 print(f"Error occured: {str(e)}")
-                errorexit("Connection Failed {} ({})".format(
-                    str(e), server_name))
+                errorexit("Connection Failed {} ({})".format(str(e), server_name))
     # Execute the sudo elevation and shutdown command            
     stdin, stdout, stderr = ssh_client.exec_command("sudo -i /sbin/shutdown -h now", get_pty=True)                  
     stdin.write(sudo_password + "\n")
@@ -145,15 +139,18 @@ def windows_server_interaction():
         confirm = input(
             "Are you sure you want to restart the server? (yes/no): ")
         if confirm.lower() == "yes":
-            # if the user confirms the reboot, the following command runs, which calls server reboot function
-            status_code, stdout, stderr = windows_server_reboot(session)
-            # this print is showning execution status if status is 0, that mean the command has been executed successfuly
-            print(f"Command executed with status code: {status_code}")
-            main.log.error(f"Output: {stdout}")
-        if stderr:
-            print(f"Error: {stderr}")
-            print("write code for windows server reboot")
-            return windows_server_reboot()
+            try:
+                # if the user confirms the reboot, the following command runs, which calls server reboot function
+                status_code, stdout, stderr = windows_server_reboot(session)
+                # this print is showning execution status if status is 0, that mean the command has been executed successfuly
+                print(f"Command executed with status code: {status_code}")
+                main.log.error(f"Output: {stdout}")
+                if stderr:
+                    print(f"Error: {stderr}")                
+            except Exception as e:
+                    print(f"Error occured: {str(e)}")
+                    errorexit("Connection Failed {} ({})".format(str(e), server_name))
+        return windows_server_interaction()
     elif choice == "2":
         # credentials defined 
         server_name, username, password = main.get_credentials()
@@ -162,14 +159,17 @@ def windows_server_interaction():
         confirm = input(
             "Are you sure you want to restart the server? (yes/no): ")
         if confirm.lower() == "yes":
-            # if the user confirms the shutdown, the following command runs, which calls server shutdown function         
-            status_code, stdout, stderr = windows_server_shutdown(session)
-            print(f"Command executed with status code: {status_code}")
-            print(f"Output: {stdout}")
-        if stderr:
-            print(f"Error: {stderr}")
-            print("write code for windows server reboot")
-            return windows_server_reboot()
+            try:
+                # if the user confirms the shutdown, the following command runs, which calls server shutdown function         
+                status_code, stdout, stderr = windows_server_shutdown(session)
+                print(f"Command executed with status code: {status_code}")
+                print(f"Output: {stdout}")
+                if stderr:
+                    print(f"Error: {stderr}")
+            except Exception as e:
+                    print(f"Error occured: {str(e)}")
+                    errorexit("Connection Failed {} ({})".format(str(e), server_name))
+        return windows_server_interaction()
     elif choice == "3":
         # choice 3 takes user to the previous menu
         return main.windows_server_menu()
@@ -179,18 +179,21 @@ def windows_server_interaction():
         exit(0)
     else:
         main.logging.error("Invalid server menu")
-        print("Invalid choice")
+        errorexit("Wrong choice of the menu.")
     return int(choice)
 
 
 # Network Meni functions
 def bulkip_scan():
     print("I am Bulk IP scanning function and I am under construction")
+    return main.network_menu()
 
 
 def nslookup():
     print("I am Bulk IP scanning function and I am under construction")
+    return main.network_menu()
 
 
 def subnet_scan():
     print("I am Bulk IP scanning function and I am under construction")
+    return main.network_menu()

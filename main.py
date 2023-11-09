@@ -1,10 +1,13 @@
 import logging
+import datetime
 import getpass
 
-import menuoptions
+import menu_options
 import services_options
 
 
+#curr_date = datetime.datetime.now()
+#login_wait = 5
 # This is the start page in AbstrUtility Tool.
 logging.basicConfig(level=logging.INFO, filename="abstrutility.log",
                     format='%(asctime)s %(levelname)s: %(message)s', datefmt='%H:%M:%S')
@@ -38,11 +41,9 @@ def main_menu():
     return int(choice)
 
 # SERVERS Menu
-
-
 def server_os():
     # This functions makes user to define which OS he is going to work with
-    print("Server OS Menu")
+    print("\nServer OS Menu")
     print("Choose server type:\n1. Linux Server Menu\n2. Windows Server Menu\n3. Previous Menu\n4. Quit")
     choice = input("Enter the server type:")
     if choice == "1":
@@ -60,20 +61,19 @@ def server_os():
         exit(0)
     else:
         log.error("Invalid server menu")
-        print(" Invalid os choice")
+        menu_options.errorexit("Wrong choice of the menu.")
     return int(choice)
 
 # LINUX SERVER MENU FUNCTIONS
-
-
 def linux_server_menu():
+    print("WLinux Server Menu")
     # this is linux server menu function, which will present the user with linux options
     print("Linux Server Menu")
     print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
         # choice 1 takes the user to the linux server interaction function, which is located in menuoptions.py file
-        menuoptions.linux_server_interaction()
+        menu_options.linux_server_interaction()
     elif choice == "2":
         # choice 2 takes the user to the linux services choice function
         linux_service_choice()
@@ -86,19 +86,18 @@ def linux_server_menu():
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
-        print("Invalid choice.")
+        menu_options.errorexit("Wrong choice of the menu.")
     return int(choice)
 
 # WINDOWS SERVER MENU FUNCTIONS
-
-
 def windows_server_menu():
+    print("Windows Server Menu")
     # this is windows server menu function, which will present the user with windows options
     print("1. Windows Server Options Menu\n2. Windows Services Options Menu\n3. Previous Menu\n4. Quit")
     choice = input(" Enter desired action: ")
     if choice == "1":
         # choice 1 takes the user to the windows server interaction function, which is located in menuoptions.py file
-        menuoptions.windows_server_interaction()
+        menu_options.windows_server_interaction()
     elif choice == "2":
         # choice 2 takes the user to the windows services choice function
         windows_service_choice()
@@ -111,12 +110,13 @@ def windows_server_menu():
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
-        print("Invalid choice.")
+        menu_options.errorexit("nvalid choice in Server Menu.")
     return int(choice)
 
 
 # LINUX SERVICES FUNCTIONS
 def linux_service_choice():
+    print("Linux Services Menu")
     # This is linux services menu choice, where the user can choose from the given services choices
     print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. Previous Menu\n5. Quit")
     choice = input(" Please enter your service choice: ")
@@ -138,12 +138,10 @@ def linux_service_choice():
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
-        print("Invalid choice.")
+        menu_options.errorexit("Invalid choice in the Linux Service Menu.")
     return int(choice)
 
 # WINDOWS SERVICES FUNCTIONS
-
-
 def windows_service_choice():
     # This is windows service menu choices function
     print("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Choose of Service\n5. Previous Menu\n6. Quit")
@@ -170,24 +168,23 @@ def windows_service_choice():
     else:
         log.error("Invalid choice in service choice menu.")
         print("Invalid choice.")
+        menu_options.errorexit("Invalid choice in the Windows Service Menu.")
     return int(choice)
 
 # NETWORK MENU FUNCTIONS
-
-
 def network_menu():
     print("Network Menu, please use only numbers (1/2/3/4/5) for this menu")
     print("1. Bulk IP scanning\n2. Nslookup\n3. Subnet scanning\n4. Previous Menu\n5. Quit")
     choice = input("Enter an option: ")
     if choice == "1":
         print("I am option 1 in network menu function")
-        menuoptions.bulkip_scan()
+        menu_options.bulkip_scan()
     elif choice == "2":
         print("I am option 2 in network menu function")
-        menuoptions.nslookup()
+        menu_options.nslookup()
     elif choice == "3":
         print("I am option 3 in network menu function")
-        menuoptions.subnet_scan()
+        menu_options.subnet_scan()
     elif choice == "4":
         print("I am option 4 in network menu function")
         main_menu()
@@ -197,7 +194,7 @@ def network_menu():
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
-        print("Invalid choice")
+        menu_options.errorexit("Invalid choice in the Network Menu.")
     return int(choice)
 
 
