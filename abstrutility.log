@@ -15,3 +15,28 @@
 16:27:25 INFO: Connected (version 2.0, client OpenSSH_7.4)
 16:27:28 INFO: Authentication (password) failed.
 16:27:28 ERROR: Bad password, connection Failed! (192.168.1.126)
+21:54:45 INFO: Connected (version 2.0, client OpenSSH_7.4)
+21:54:45 INFO: Authentication (password) successful!
+22:12:47 INFO: Connected (version 2.0, client OpenSSH_7.4)
+22:12:47 INFO: Authentication (password) successful!
+22:18:37 INFO: Connected (version 2.0, client OpenSSH_7.4)
+22:18:37 INFO: Authentication (password) successful!
+22:20:12 INFO: Connected (version 2.0, client OpenSSH_7.4)
+22:20:12 INFO: Authentication (password) successful!
+22:26:31 INFO: Connected (version 2.0, client OpenSSH_7.4)
+22:26:31 INFO: Authentication (password) successful!
+09:10:35 ERROR: Connection Failed [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond (192.168.1.126)
+09:16:06 ERROR: Invalid server menu
+11:31:07 ERROR: Output: 
+11:50:11 ERROR: Connection Failed the specified credentials were rejected by the server (192.168.1.181)
+11:54:23 ERROR: Connection Failed HTTPConnectionPool(host='19.168.1.181', port=5985): Max retries exceeded with url: /wsman (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x0000000004600250>, 'Connection to 19.168.1.181 timed out. (connect timeout=30)')) (19.168.1.181)
+14:43:02 INFO: Connected (version 2.0, client OpenSSH_7.4)
+14:43:02 INFO: Authentication (password) successful!
+14:43:21 ERROR: Invalid choice in server menu.
+14:47:32 ERROR: Invalid choice in service choice menu.
+14:47:32 ERROR: Wrong choice of the menu.
+16:03:40 INFO: Connected (version 2.0, client OpenSSH_7.4)
+16:03:40 INFO: Authentication (password) successful!
+16:08:38 INFO: Connected (version 2.0, client OpenSSH_7.4)
+16:08:39 INFO: Authentication (password) successful!
+17:50:57 ERROR: Invalid choice in main  menu.

@@ -5,10 +5,12 @@ import getpass
 import menu_options
 import services_options
 
-
-#curr_date = datetime.datetime.now()
-#login_wait = 5
 # This is the start page in AbstrUtility Tool.
+
+curr_date = datetime.datetime.now()
+login_wait = 5
+
+
 logging.basicConfig(level=logging.INFO, filename="abstrutility.log",
                     format='%(asctime)s %(levelname)s: %(message)s', datefmt='%H:%M:%S')
 log = logging.getLogger("abstrutility.log")

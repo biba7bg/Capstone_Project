@@ -20,7 +20,6 @@ def windows_session(server_name, username, password, port=5985, server_cert_vali
 
 
 # LINUX OS SERVICES FUNCTIONS
-
 def linux_allservices():
     print("I am linux server all services dislay function")
     server_name, username, password = main.get_credentials()
@@ -85,7 +84,7 @@ def linux_JVM():
         else:
             print(f"No JVM found with this name: {jvm_name}") 
             menu_options.errorexit(f"No JVM found with this name: {jvm_name}")
-            return main.linux_service_choice()
+            #return main.linux_service_choice()
         ask_user_action = input("Choose an JVM action (restart/stop/start): ").lower()
         if ask_user_action == "restart":
             stdin, stdout, stderr = ssh_client.exec_command(f" sudo -i /usr/local/bin .\jvmRestart {jvm_name}", get_pty=True)
@@ -135,8 +134,6 @@ def linx_resources():
 
 
 # WINDOWS OS SERVICES FUNCTIONS
-
-
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
 

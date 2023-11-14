@@ -21,8 +21,6 @@ def suppress_stdout():
             sys.stdout = old_stdout
 
 # error logging function
-
-
 def errorexit(str):
     main.log.error(str)
     print("ERROR: {}".format(str))
@@ -30,29 +28,9 @@ def errorexit(str):
     main.logging.shutdown()
     os._exit(1)
 
-
-# WINDOWS SERVER RESTART FUNCTION
-def windows_server_reboot(session):
-    # functions which intiates windows server restart
-    reboot_command = "shutdown /r /t 0"
-    result = session.run_cmd(reboot_command)
-    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
-
-# WINDOWS SERVER SHUTDOWN FUNCTION
-def windows_server_shutdown(session):
-    # functions which intiates windows server shutdown
-    shutdown_command = "shutdown /s /t 0"
-    result = session.run_cmd(shutdown_command)
-    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
-
-# LINUX SERVER MENU FUNCTIONS
-def linux_server_interaction():
-    print("Linux Server Actions Menu")
-    # This linux  server interaction menu 
-    print("1. Linux Server Restart\n2. Linux Server Shutdown\n3. Previous Menu\n4. Quit")
-    choice = input("Enter desired action: ")
-    if choice == "1":
-        # This linux  server reboot choice, program creates the ssh connection, sudo elevates the user and send the restart command 
+# Linux server restart function
+def lunux_restart():
+      # This linux  server reboot choice function, program creates the ssh connection, sudo elevates the user and send the restart command 
         server_name, username, password = main.get_credentials()
         sudo_password = getpass.getpass("Enter your sudo password: ")
         confirm = input(
@@ -77,22 +55,9 @@ def linux_server_interaction():
         # here I would like to add funtion to catch what happens at the background
         print(" Server is rebooting...")
         return linux_server_interaction()
-    elif choice == "2":
-        #linux shutdown function 
-        linux_shutdown()
-    elif choice == "3":
-        return main.linux_server_menu()
-    elif choice == "4":
-        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
-        exit(0)
-    else:
-        main.logging.debug("Invalid server menu")
-        errorexit("Wrong choice of the menu.")
-    return int(choice)
-
-
+# Linux server shutdown function
 def linux_shutdown():
-    print("I am linux shutdown function")
+    #linux shutdown function
     server_name, username, password = main.get_credentials()
     sudo_password = getpass.getpass("Enter your sudo password: ")
     confirm = input(
@@ -123,6 +88,42 @@ def linux_shutdown():
     ssh_client.close()
     print(f"Sent shutdown command to server {server_name}.")
     return main.linux_server_menu()
+
+# Windowsserver restart function
+def windows_server_reboot(session):
+    # functions which intiates windows server restart
+    reboot_command = "shutdown /r /t 0"
+    result = session.run_cmd(reboot_command)
+    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+
+# Windows server shutdown function
+def windows_server_shutdown(session):
+    # functions which intiates windows server shutdown
+    shutdown_command = "shutdown /s /t 0"
+    result = session.run_cmd(shutdown_command)
+    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+
+# LINUX SERVER MENU FUNCTIONS
+def linux_server_interaction():
+    print("Linux Server Actions Menu")
+    # This linux  server interaction menu 
+    print("1. Linux Server Restart\n2. Linux Server Shutdown\n3. Previous Menu\n4. Quit")
+    choice = input("Enter desired action: ")
+    if choice == "1":
+        #linux reastart function called here
+        lunux_restart()
+    elif choice == "2":
+        #linux shutdown function called here
+        linux_shutdown()
+    elif choice == "3":
+        return main.linux_server_menu()
+    elif choice == "4":
+        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
+        exit(0)
+    else:
+        main.logging.debug("Invalid server menu")
+        errorexit("Wrong choice of the menu.")
+    return int(choice)
 
 
 # WINDOWS SERVER MENU FUNCTIONS
@@ -183,7 +184,7 @@ def windows_server_interaction():
     return int(choice)
 
 
-# Network Meni functions
+# NETWORK MENU FUNCTIONS
 def bulkip_scan():
     print("I am Bulk IP scanning function and I am under construction")
     return main.network_menu()
