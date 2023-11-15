@@ -50,10 +50,10 @@ def linux_last5_reboots():
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)
-        stdin, stdout, stderr = ssh_client.exec_command(
-            "uptime && last reboot | head -n 5")
+        stdin, stdout, stderr = ssh_client.exec_command("uptime && last reboot | head -n 5")
         services = str(stdout.read().decode('utf-8'))
         print(services)
+        main.log.error("Unknown command error occured")
     except paramiko.AuthenticationException:
         print(" Authentication failed, please verify your credentials.")
     except paramiko.SSHException as e:
@@ -136,21 +136,17 @@ def linx_resources():
 # WINDOWS OS SERVICES FUNCTIONS
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
-
-    # Get connection details from the user
-    # server_name = input("Enter the remote server IP: ").strip()
     server_name, username, password = main.get_credentials()
 
     # Create a WinRM session
     session = windows_session(server_name, username, password)
 
     # PowerShell command to get all running services
-    # get_running_services_cmd = 'Get-Service | Where-Object { $_.Status -eq "Running" } | Format-Table DisplayName, Status -AutoSize'
     get_services = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
 
     # Execute the command on the remote server
     response = session.run_ps(get_services)
-
+    
     # Check the output and error
     if response.status_code == 0:
         print("\nList of Running Services:\n")
@@ -158,7 +154,8 @@ def windows_allservices():
     else:
         print("Failed to fetch running services.")
         print("Error:", response.std_err.decode())
-        return main.windows_server_menu()
+        main.log.error("Unknown error occured")
+    return main.windows_server_menu()
 
 
 def windows_IIS():

@@ -14,7 +14,7 @@
 2. After Python is installed add/update the following modules with these commands:
 
     >`python -m pip install --upgrade pip`
-    `pip install --upgrade setuptools wheel pywin32 flake8 pylint ptpython`
+    `pip install --upgrade setuptools wheel pywin32 pylint ptpython`
     `pip install virtualenv virtualenv-clone virtualenvwrapper`
 
 3. Create a base folder to store python code in (ex: c:\work\projects\python\ )

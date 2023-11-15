@@ -40,3 +40,36 @@
 16:08:38 INFO: Connected (version 2.0, client OpenSSH_7.4)
 16:08:39 INFO: Authentication (password) successful!
 17:50:57 ERROR: Invalid choice in main  menu.
+1:14:37 INFO: Connected (version 2.0, client OpenSSH_7.4)
+21:14:38 INFO: Authentication (password) successful!
+21:15:06 INFO: Connected (version 2.0, client OpenSSH_7.4)
+21:15:08 INFO: Authentication (password) failed.
+21:15:35 INFO: Connected (version 2.0, client OpenSSH_7.4)
+21:15:36 INFO: Authentication (password) successful!2023111421:54:09 INFO: Connected (version 2.0, client OpenSSH_7.4)
+2023111421:54:11 INFO: Authentication (password) failed.
+2023111421:56:37 INFO: Connected (version 2.0, client OpenSSH_7.4)
+2023111421:56:37 INFO: Authentication (password) successful!
+20231114-22:01:21 INFO: Connected (version 2.0, client OpenSSH_7.4)
+20231114-22:01:21 INFO: Authentication (password) successful!
+20230211/14/23-22:02:59 INFO: Connected (version 2.0, client OpenSSH_7.4)
+20230311/14/23-22:03:00 INFO: Authentication (password) successful!
+20230311/14/23-22:03:00 ERROR: Unknown command error occured
+20230311/14/23-22:03:48 INFO: Connected (version 2.0, client OpenSSH_7.4)
+20230311/14/23-22:03:50 INFO: Authentication (password) failed.
+20230311/14/23-22:03:50 ERROR: Bad password, connection Failed! (192.168.1.126)
+11/14/23052023-22:05:44 INFO: Connected (version 2.0, client OpenSSH_7.4)
+11/14/23052023-22:05:47 INFO: Authentication (password) failed.
+2023/11/14-22:07:24 INFO: Connected (version 2.0, client OpenSSH_7.4)
+2023/11/14-22:07:25 INFO: Authentication (password) successful!
+2023/11/14-22:07:25 ERROR: Unknown command error occured
+2023-11-14-22:09:12 INFO: Connected (version 2.0, client OpenSSH_7.4)
+2023-11-14-22:09:12 INFO: Authentication (password) successful!
+2023-11-14-22:09:13 ERROR: Unknown command error occured
+2023/11/14-22:10:31 ERROR: Invalid choice in service choice menu.
+2023/11/14-22:10:31 ERROR: Invalid choice in the Linux Service Menu.
+2023/11/14-22:24:52 INFO: Connected (version 2.0, client OpenSSH_7.4)
+2023/11/14-22:24:53 INFO: Authentication (password) successful!
+2023/11/15-01:40:26 INFO: Connected (version 2.0, client OpenSSH_7.4)
+2023/11/15-01:40:26 INFO: Authentication (password) successful!
+2023/11/15-01:41:48 ERROR: Invalid server menu
+2023/11/15-01:41:48 ERROR: Wrong choice of the menu.

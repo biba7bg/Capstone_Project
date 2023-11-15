@@ -1,5 +1,4 @@
 import logging
-import datetime
 import getpass
 
 import menu_options
@@ -7,12 +6,9 @@ import services_options
 
 # This is the start page in AbstrUtility Tool.
 
-curr_date = datetime.datetime.now()
-login_wait = 5
-
 
 logging.basicConfig(level=logging.INFO, filename="abstrutility.log",
-                    format='%(asctime)s %(levelname)s: %(message)s', datefmt='%H:%M:%S')
+                    format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y/%m/%d-%H:%M:%S')
 log = logging.getLogger("abstrutility.log")
 
 
@@ -24,7 +20,7 @@ def get_credentials():
     return server_name, username.lower(), password
 
 
-# SERVERS MENU FUNCTIONS
+# Main MENU FUNCTIONS
 def main_menu():
     # This is AbsrUtility main  menu
     print("\nMain menu:")
@@ -42,7 +38,7 @@ def main_menu():
         print(" Invalid choice.")
     return int(choice)
 
-# SERVERS Menu
+# SERVERS Operating system choice Menu
 def server_os():
     # This functions makes user to define which OS he is going to work with
     print("\nServer OS Menu")
@@ -68,7 +64,7 @@ def server_os():
 
 # LINUX SERVER MENU FUNCTIONS
 def linux_server_menu():
-    print("WLinux Server Menu")
+    print("Linux Server Menu")
     # this is linux server menu function, which will present the user with linux options
     print("Linux Server Menu")
     print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
