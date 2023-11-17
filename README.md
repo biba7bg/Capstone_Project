@@ -33,7 +33,7 @@
 
 7. You should be ready to run the script:
 
-    >`python F5passupdate.py`
+    >`python main.py`
 
 ---
 ## How to run in the future (after the initial setup steps from above)

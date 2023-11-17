@@ -180,9 +180,16 @@ def network_menu():
     elif choice == "2":
         print("I am option 2 in network menu function")
         menu_options.nslookup()
+        ip_list = input(" Enter IP addresses separated by commas: ").split(",")
+        ip_list = [ip.strip() for ip in ip_list]  # Remove any extra whitespace
+        lookup_result = menu_options.nslookup(ip_list)
+        for ip, hostname in lookup_result.items():
+            print(f"{ip}: {hostname}")
+        
     elif choice == "3":
         print("I am option 3 in network menu function")
-        menu_options.subnet_scan()
+        subnet_input = input("Enter the subnet to scan (e.g., 192.168.1.0/24): ")
+        menu_options.subnet_scan(subnet_input)
     elif choice == "4":
         print("I am option 4 in network menu function")
         main_menu()

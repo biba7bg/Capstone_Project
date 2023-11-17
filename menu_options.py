@@ -2,11 +2,11 @@ import sys
 import os
 import paramiko
 import getpass
+import socket
 from contextlib import contextmanager
 
 import main
 import services_options
-
 
 
 # this function is suppresing the print out to the screen, this way when sudo password is entered, it doesn't show on the screen
@@ -55,6 +55,7 @@ def lunux_restart():
         # here I would like to add funtion to catch what happens at the background
         print(" Server is rebooting...")
         return linux_server_interaction()
+
 # Linux server shutdown function
 def linux_shutdown():
     #linux shutdown function
@@ -84,7 +85,7 @@ def linux_shutdown():
         print(stdout.read().decode())
     # here I would like to add funtion to catch what happens at the background
     print(" Server is shuttingdown...")
-     # Close the SSH client session
+    # Close the SSH client session
     ssh_client.close()
     print(f"Sent shutdown command to server {server_name}.")
     return main.linux_server_menu()
@@ -190,11 +191,28 @@ def bulkip_scan():
     return main.network_menu()
 
 
-def nslookup():
-    print("I am Bulk IP scanning function and I am under construction")
+def nslookup(ip_address):
+    ip_list = input(" Enter IP addresses separated by commas: ").split(",")
+    ip_list = [ip.strip() for ip in ip_list]  # Remove any extra whitespace
+    lookup_result = nslookup(ip_list)
+    for ip, hostname in lookup_result.items():
+        print(f"{ip}: {hostname}")
+    result = {}
+    for ip in ip_address:
+        try:
+            hostname, alias, addresslist = socket.gethostbyaddr(ip)
+            result[ip] = hostname
+        except socket.herror:
+            result[ip] = "Hostname not found" 
+        return result          
     return main.network_menu()
 
 
-def subnet_scan():
-    print("I am Bulk IP scanning function and I am under construction")
+def subnet_scan(subnet):
+    print("I am subnet scanning function and I am under construction")
+    nm = nmap.PortScanner()
+    nm.scan(host=subnet, arguments="-sn") #sn for ping scan
+    host_list = [(x, nm[x]["status"]["state"]) for x in nm.all_hosts()]
+    for hosts, status in host_list:
+        print(f"{paramiko.HostKeys}: {status}")
     return main.network_menu()
