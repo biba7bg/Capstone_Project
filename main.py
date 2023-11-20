@@ -172,24 +172,30 @@ def windows_service_choice():
 # NETWORK MENU FUNCTIONS
 def network_menu():
     print("Network Menu, please use only numbers (1/2/3/4/5) for this menu")
-    print("1. Bulk IP scanning\n2. Nslookup\n3. Subnet scanning\n4. Previous Menu\n5. Quit")
+    print("1. Pathping scanning\n2. Nslookup\n3. Port scanning\n4. Previous Menu\n5. Quit")
     choice = input("Enter an option: ")
     if choice == "1":
-        print("I am option 1 in network menu function")
-        menu_options.bulkip_scan()
+        # option 1 pathping is calling the function, which is defined in menu_options.py file
+        pathping = menu_options.pathping_scan()
+        print(pathping)
+        print("*****************************")
+        return network_menu()
     elif choice == "2":
-        print("I am option 2 in network menu function")
-        menu_options.nslookup()
-        ip_list = input(" Enter IP addresses separated by commas: ").split(",")
-        ip_list = [ip.strip() for ip in ip_list]  # Remove any extra whitespace
-        lookup_result = menu_options.nslookup(ip_list)
-        for ip, hostname in lookup_result.items():
-            print(f"{ip}: {hostname}")
-        
+        # option 2 nslookup is calling the function, which is defined in menu_options.py file
+        ip_address = []
+        menu_options.nslookup(ip_address)
+        ip_list = input("Enter IP Addresses separated by comma: ").split(",")
+        ip_list = [ip.strip() for ip in ip_list]# remove extra spaces
+        lookup_results = menu_options.nslookup(ip_list)
+        for ip, hostname in lookup_results.items():
+            print(f"{ip}: {hostname}")   
+        print("*****************************")
+        print("This is end of the list")
+        print("*****************************")
+        return network_menu()   
     elif choice == "3":
         print("I am option 3 in network menu function")
-        subnet_input = input("Enter the subnet to scan (e.g., 192.168.1.0/24): ")
-        menu_options.subnet_scan(subnet_input)
+        menu_options.port_scan()
     elif choice == "4":
         print("I am option 4 in network menu function")
         main_menu()

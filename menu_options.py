@@ -1,8 +1,11 @@
 import sys
 import os
-import paramiko
 import getpass
 import socket
+import subprocess
+import ipaddress
+import paramiko
+
 from contextlib import contextmanager
 
 import main
@@ -180,39 +183,39 @@ def windows_server_interaction():
         print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         exit(0)
     else:
-        main.logging.error("Invalid server menu")
+        main.logging.error("Invalid server menu option")
         errorexit("Wrong choice of the menu.")
     return int(choice)
 
 
 # NETWORK MENU FUNCTIONS
-def bulkip_scan():
-    print("I am Bulk IP scanning function and I am under construction")
-    return main.network_menu()
+def pathping_scan():
+    print("I am pathping scanning function and I am under construction")
+    ip_address = input("Please provide the IP Address or hostname: ")
+    #defining pathping command 
+    pathping_command = ["pathping", ip_address]
+    #running the pathping command
+    try:
+        print("Running pathping, this may take couple of minutes...")
+        result = subprocess.run(pathping_command, check=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE, text=True)
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        main.log.error("Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again.") 
+        return f"Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again: {e.stderr}" 
 
 
 def nslookup(ip_address):
-    ip_list = input(" Enter IP addresses separated by commas: ").split(",")
-    ip_list = [ip.strip() for ip in ip_list]  # Remove any extra whitespace
-    lookup_result = nslookup(ip_list)
-    for ip, hostname in lookup_result.items():
-        print(f"{ip}: {hostname}")
-    result = {}
-    for ip in ip_address:
-        try:
-            hostname, alias, addresslist = socket.gethostbyaddr(ip)
-            result[ip] = hostname
-        except socket.herror:
-            result[ip] = "Hostname not found" 
-        return result          
-    return main.network_menu()
+       #this is nslookup function which is called from network menu, option 2
+        results = {}
+        for ip in ip_address:
+            try:
+                hostname, alias, addresslist = socket.gethostbyaddr(ip)
+                results[ip] = hostname
+            except socket.herror:
+                results[ip] = "no host found"    
+        return results      
+        
 
-
-def subnet_scan(subnet):
-    print("I am subnet scanning function and I am under construction")
-    nm = nmap.PortScanner()
-    nm.scan(host=subnet, arguments="-sn") #sn for ping scan
-    host_list = [(x, nm[x]["status"]["state"]) for x in nm.all_hosts()]
-    for hosts, status in host_list:
-        print(f"{paramiko.HostKeys}: {status}")
+def port_scan():
+    print("I am port scanning function and I am under construction")
     return main.network_menu()

@@ -38,6 +38,7 @@ def linux_allservices():
         print(f"Unable to establish SSH connection: {str(e)}")
     except Exception as e:
         print(f"Error occured: {str(e)}")
+        main.log.error(f"Error occured: {str(e)}")
     finally:
         ssh_client.close()
     return main.linux_service_choice()
@@ -129,7 +130,7 @@ def linux_JVM():
 
 
 def linx_resources():
-    print(" I am linux resources display")
+    print(" I am linux resources display, and I am under construction")
     return main.linux_service_choice()
 
 
@@ -137,16 +138,12 @@ def linx_resources():
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
     server_name, username, password = main.get_credentials()
-
     # Create a WinRM session
     session = windows_session(server_name, username, password)
-
     # PowerShell command to get all running services
     get_services = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
-
     # Execute the command on the remote server
     response = session.run_ps(get_services)
-    
     # Check the output and error
     if response.status_code == 0:
         print("\nList of Running Services:\n")
@@ -154,7 +151,7 @@ def windows_allservices():
     else:
         print("Failed to fetch running services.")
         print("Error:", response.std_err.decode())
-        main.log.error("Unknown error occured")
+        main.log.error("Error:", response.std_err.decode())
     return main.windows_server_menu()
 
 
