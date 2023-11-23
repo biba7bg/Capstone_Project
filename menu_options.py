@@ -7,6 +7,7 @@ import ipaddress
 import paramiko
 
 from contextlib import contextmanager
+from printtxtslow import print_slow
 
 import main
 import services_options
@@ -34,6 +35,7 @@ def errorexit(str):
 # Linux server restart function
 def lunux_restart():
       # This linux  server reboot choice function, program creates the ssh connection, sudo elevates the user and send the restart command 
+        main.log.info("Initiating server reboot process.")
         server_name, username, password = main.get_credentials()
         sudo_password = getpass.getpass("Enter your sudo password: ")
         confirm = input(
@@ -43,75 +45,124 @@ def lunux_restart():
                 ssh_client = paramiko.SSHClient()
                 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)
+                main.log.info(f"Successfully connected to {server_name} as {username}.")
             except paramiko.AuthenticationException:
                 ssh_client
+                main.log.info(f"Successfully connected to {server_name} as {username}.")
                 print("Bad Password! Connectionclose to {}".format(server_name))
                 errorexit("Bad password, connection Failed! ({})".format(server_name))
             except Exception as e:
+                main.log.info(f"Error occured while connecting to {server_name}: {str(e)}")
                 print(f"Error occured: {str(e)}")
                 errorexit("Connection Failed {} ({})".format(str(e), server_name))
-        stdin, stdout, stderr = ssh_client.exec_command("sudo -i /sbin/reboot", get_pty=True)
-        stdin.write(sudo_password + "\n")
-        stdin.flush()
-        with suppress_stdout():
-            print(stdout.read().decode())
-        # here I would like to add funtion to catch what happens at the background
-        print(" Server is rebooting...")
-        return linux_server_interaction()
+            try:    
+                stdin, stdout, stderr = ssh_client.exec_command("sudo -i /sbin/reboot", get_pty=True)
+                stdin.write(sudo_password + "\n")
+                stdin.flush()
+                with suppress_stdout():
+                    print(stdout.read().decode())
+                main.log.info("Reboot command executed successfully.")
+            except Exception as e:    
+                main.log.info((f"Error occurred while executing reboot command: {str(e)}"))
+                print(f"Error occurred: {str(e)}")
+            # Close the SSH client session
+            ssh_client.close()
+            print(" Server is rebooting...")
+            return linux_server_interaction()
+        else:
+            main.log.info("Server reboot cancelled by user.")
+            return linux_server_interaction()
 
+        
 # Linux server shutdown function
 def linux_shutdown():
     #linux shutdown function
+    main.log.info("Initiating server shutdown process.")
     server_name, username, password = main.get_credentials()
     sudo_password = getpass.getpass("Enter your sudo password: ")
     confirm = input(
-        "Are you sure you want to restart the server? (yes/no): ")
+        "Are you sure you want to shutdown the server? (yes/no): ")
     if confirm.lower() == 'yes':
         try:
             # Establish an SSH client session
             ssh_client = paramiko.SSHClient()
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)   
+            ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)
+            main.log.info(f"Successfully connected to {server_name} as {username}.")   
         except paramiko.AuthenticationException:
                 ssh_client
+                main.log.info(f"Successfully connected to {server_name} as {username}.")
                 print("Bad Password! Connectionclose to {}".format(server_name))
                 errorexit(
                     "Bad password, connection Failed! ({})".format(server_name))
         except Exception as e:
+                main.log.info(f"Error occured while connecting to {server_name}: {str(e)}")
                 print(f"Error occured: {str(e)}")
                 errorexit("Connection Failed {} ({})".format(str(e), server_name))
-    # Execute the sudo elevation and shutdown command            
-    stdin, stdout, stderr = ssh_client.exec_command("sudo -i /sbin/shutdown -h now", get_pty=True)                  
-    stdin.write(sudo_password + "\n")
-    stdin.flush()
-    with suppress_stdout():
-        print(stdout.read().decode())
-    # here I would like to add funtion to catch what happens at the background
-    print(" Server is shuttingdown...")
-    # Close the SSH client session
-    ssh_client.close()
-    print(f"Sent shutdown command to server {server_name}.")
-    return main.linux_server_menu()
+        try:        
+            # Execute the sudo elevation and shutdown command            
+            stdin, stdout, stderr = ssh_client.exec_command("sudo -i /sbin/shutdown -h now", get_pty=True)                  
+            stdin.write(sudo_password + "\n")
+            stdin.flush()
+            with suppress_stdout():
+                print(stdout.read().decode())
+            main.log.info("Reboot command executed successfully.")    
+        except Exception as e:
+            main.log.info((f"Error occurred while executing reboot command: {str(e)}"))
+            print(f"Error occurred: {str(e)}")
+        # Close the SSH client session
+        ssh_client.close()
+        print_slow(f"Sent shutdown command to server {server_name}.")
+        return main.linux_server_menu()
+    else:
+        main.log.info("Server shutfown cancelled by user.")
+        return linux_server_interaction()
 
 # Windowsserver restart function
 def windows_server_reboot(session):
-    # functions which intiates windows server restart
-    reboot_command = "shutdown /r /t 0"
-    result = session.run_cmd(reboot_command)
-    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+    try:
+        # functions which intiates windows server restart
+        main.log.info("Initiating server reboot process.")
+        #execture reboot
+        reboot_command = "shutdown /r /t 0"
+        result = session.run_cmd(reboot_command)
+        if result.status_code == 0:
+            main.log.info("Reboot command executed successfully.")
+        else:
+            main.log.error(f"Reboot command failed with status code {result.status_code}.") 
+        # Return the results          
+        return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+    except Exception as e:
+        main.log.error(f"An error occurred during server restart: {e}")
+        raise  
 
 # Windows server shutdown function
 def windows_server_shutdown(session):
     # functions which intiates windows server shutdown
-    shutdown_command = "shutdown /s /t 0"
-    result = session.run_cmd(shutdown_command)
-    return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+    try:
+        main.log.info("Initiating server shutdown process.")
+        #execture shutdown
+        shutdown_command = "shutdown /s /t 0"
+        result = session.run_cmd(shutdown_command)
+        
+        if result.status_code == 0:
+            main.log.info("Shutdown command executed successfully.")
+        else:
+            main.log.error(f"Shutdown command failed with status code {result.status_code}.") 
+        # Return the results          
+        result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+    except Exception as e:
+        main.log.error(f"An error occurred during server shutdown: {e}")
+        raise  
 
 # LINUX SERVER MENU FUNCTIONS
 def linux_server_interaction():
-    print("Linux Server Actions Menu")
-    # This linux  server interaction menu 
+      # This linux  server interaction menu 
+    print("                             ")
+    print_slow("Linux Server Actions Menu, please use only numbers (1/2/3/4) for this menu")
+    print("*****************************")
     print("1. Linux Server Restart\n2. Linux Server Shutdown\n3. Previous Menu\n4. Quit")
+    print("*****************************")
     choice = input("Enter desired action: ")
     if choice == "1":
         #linux reastart function called here
@@ -122,7 +173,8 @@ def linux_server_interaction():
     elif choice == "3":
         return main.linux_server_menu()
     elif choice == "4":
-        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
+        print_slow("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
+        print("Linux Server Actions Menu")
         exit(0)
     else:
         main.logging.debug("Invalid server menu")
@@ -133,7 +185,11 @@ def linux_server_interaction():
 # WINDOWS SERVER MENU FUNCTIONS
 def windows_server_interaction():
     # This windows server menu function, which displays the server options given to the user
+    print("                             ")
+    print_slow("Windows Server Actions Menu, please use only numbers (1/2/3/4) for this menu")
+    print("*****************************")
     print("1. Windows Restart\n2. Windows Shutdown\n3. Previus Menu\n4. Quit")
+    print("*****************************")
     choice = input("Enter desired action: ")
     if choice == "1":
         # credentials defined 
@@ -162,13 +218,13 @@ def windows_server_interaction():
         # here the program calls the windows session function, which is locted is services_options.py file
         session = services_options.windows_session(server_name, username, password)
         confirm = input(
-            "Are you sure you want to restart the server? (yes/no): ")
+            "Are you sure you want to shutdown the server? (yes/no): ")
         if confirm.lower() == "yes":
             try:
                 # if the user confirms the shutdown, the following command runs, which calls server shutdown function         
                 status_code, stdout, stderr = windows_server_shutdown(session)
                 print(f"Command executed with status code: {status_code}")
-                print(f"Output: {stdout}")
+                main.log.error(f"Output: {stdout}")
                 if stderr:
                     print(f"Error: {stderr}")
             except Exception as e:
@@ -180,7 +236,8 @@ def windows_server_interaction():
         return main.windows_server_menu()
     elif choice == "4.":
         # choice 4 exits the program
-        print("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
+        print_slow("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
+        print("*****************************")
         exit(0)
     else:
         main.logging.error("Invalid server menu option")
@@ -190,7 +247,7 @@ def windows_server_interaction():
 
 # NETWORK MENU FUNCTIONS
 def pathping_scan():
-    print("I am pathping scanning function and I am under construction")
+    # pathping functionction
     ip_address = input("Please provide the IP Address or hostname: ")
     #defining pathping command 
     pathping_command = ["pathping", ip_address]

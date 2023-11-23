@@ -4,6 +4,7 @@ import winrm
 
 import main
 import menu_options
+from printtxtslow import print_slow
 
 
 # rempte windows function wich is connecting remote windows host
@@ -130,7 +131,7 @@ def linux_JVM():
 
 
 def linx_resources():
-    print(" I am linux resources display, and I am under construction")
+    print_slow(" I am linux resources display, and I am under construction")
     return main.linux_service_choice()
 
 
@@ -152,7 +153,7 @@ def windows_allservices():
         print("Failed to fetch running services.")
         print("Error:", response.std_err.decode())
         main.log.error("Error:", response.std_err.decode())
-    return main.windows_server_menu()
+    return main.windows_service_choice()
 
 
 def windows_IIS():
@@ -182,13 +183,16 @@ def windows_IIS():
 
 
 def windows_app_pools():
-    session = windows_session()
+    print_slow("I am windows app pool service restart, and I am under construction.")
+    '''session = windows_session()
     app_pool_services = 'Import-Module WebAdministration; Get-WebAppPool | Select-Onject -ExpandProperty Name'
     output = session.run_ps(
         app_pool_services).std_out.decode().strip().splitlines()
-    return output
+    return output'''
+    return main.windows_service_choice()
 
 
 def windows_service_input():
-    print(" I am windows service input display")
+    print(" I am windows service input display, and I am under construction.")
+    return main.windows_service_choice()
 
