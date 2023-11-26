@@ -4,6 +4,7 @@ import getpass
 import menu_options
 import services_options
 from printtxtslow import print_slow
+from printtxtslow import separate
 
 # This is the start page in AbstrUtility Tool.
 
@@ -25,10 +26,10 @@ def get_credentials():
 # Main MENU FUNCTIONS
 def main_menu():
     # This is AbsrUtility Toolmain menu
-    print_slow("\nMain menu, please use only numbers (1/2/3) for this menu")
-    print("*****************************")
+    print_slow("\nMain Menu, please use only numbers (1/2/3) for this menu")
+    separate()
     print("1. Server Menu\n2. Network Menu\n3. Exit")
-    print("*****************************")
+    separate()
     choice = input(" \nPlease chose an option: ")
     if choice == "1":
         server_os()
@@ -38,7 +39,7 @@ def main_menu():
         print("                                    ")
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
         print("                                    ")
-        print("*****************************")
+        separate()
         exit(0)
     else:
         log.error("Invalid choice in main  menu.")
@@ -49,10 +50,10 @@ def main_menu():
 def server_os():
     # This functions makes user to define which OS he is going to work with
     print("                           ")
-    print_slow("\nServer OS Menu, please use only numbers (1/2/3/4) for this menu")
-    print("*****************************")
+    print_slow("\nServer Menu, please use only numbers (1/2/3/4) for this menu")
+    separate()
     print("Choose server type:\n1. Linux Server Menu\n2. Windows Server Menu\n3. Previous Menu\n4. Quit")
-    print("*****************************")
+    separate()
     choice = input("Enter the server type:")
     if choice == "1":
         # if choice 1 is selected, the program calls  linux server menu function
@@ -65,7 +66,7 @@ def server_os():
         return main_menu()
     elif choice == "4":
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
-        print("*****************************")
+        separate()
         # quit the program
         exit(0)
     else:
@@ -78,9 +79,9 @@ def linux_server_menu():
     # this is linux server menu function, which will present the user with linux options
     print("                             ")
     print_slow("Linux Server Menu, please use only numbers (1/2/3/4) for this menu")
-    print("*****************************")
+    separate()
     print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
-    print("*****************************")
+    separate()
     choice = input(" Enter desired action: ")
     if choice == "1":
         # choice 1 takes the user to the linux server interaction function, which is located in menuoptions.py file
@@ -94,7 +95,7 @@ def linux_server_menu():
     elif choice == "4":
         # choice 4 exits the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
-        print("*****************************")
+        separate()
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
@@ -106,9 +107,9 @@ def windows_server_menu():
     # this is windows server menu function, which will present the user with windows options
     print("                             ")
     print_slow("Windows Server Menu, please use only numbers (1/2/3/4) for this menu")
-    print("*****************************")
+    separate()
     print("1. Windows Server Options Menu\n2. Windows Services Options Menu\n3. Previous Menu\n4. Quit")
-    print("*****************************")
+    separate()
     choice = input(" Enter desired action: ")
     if choice == "1":
         # choice 1 takes the user to the windows server interaction function, which is located in menuoptions.py file
@@ -122,7 +123,7 @@ def windows_server_menu():
     elif choice == "4":
         # choice 4 exits the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
-        print("*****************************")
+        separate()
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
@@ -135,9 +136,9 @@ def linux_service_choice():
     # This is linux services menu choice, where the user can choose from the given services choices
     print("                             ")
     print_slow("Linux Services Menu, please use only numbers (1/2/3/4/5) for this menu")
-    print("*****************************")
+    separate()
     print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. Previous Menu\n5. Quit")
-    print("*****************************")
+    separate()
     choice = input(" Please enter your service choice: ")
     if choice == "1":
         # this choice takes the user to call all running services, the function for this is in the services_option.py file
@@ -154,7 +155,7 @@ def linux_service_choice():
     elif choice == "5":
         # choice 5 exits the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
-        print("*****************************")
+        separate()
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
@@ -166,9 +167,9 @@ def windows_service_choice():
     # This is windows service menu choices function
     print("                             ")
     print_slow("Windows Services Menu, please use only numbers (1/2/3/4/5/6) for this menu")
-    print("*****************************")
+    separate()
     print_slow("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Provide Service Name\n5. Previous Menu\n6. Quit")
-    print("*****************************")
+    separate()
     choice = input("Enter an option: ")
     if choice == "1":
         print("I am  option 1 in windows_service_choice")
@@ -201,15 +202,15 @@ def network_menu():
     # This is network menu choices
     print("                             ")
     print_slow("Network Menu, please use only numbers (1/2/3/4/5) for this menu")
-    print("*****************************")
-    print("1. Pathping\n2. Nslookup\n3. Port scanning\n4. Previous Menu\n5. Quit")
-    print("*****************************")
+    separate()
+    print("1. Pathping\n2. Nslookup\n3. Subnet Scanning\n4. Previous Menu\n5. Quit")
+    separate()
     choice = input("Enter an option: ")
     if choice == "1":
         # option 1 pathping is calling the function, which is defined in menu_options.py file
         pathping = menu_options.pathping_scan()
         print(pathping)
-        print("*****************************")
+        separate()
         return network_menu()
     elif choice == "2":
         # option 2 nslookup is calling the function, which is defined in menu_options.py file
@@ -220,20 +221,20 @@ def network_menu():
         lookup_results = menu_options.nslookup(ip_list)
         for ip, hostname in lookup_results.items():
             print(f"{ip}: {hostname}")   
-        print("*****************************")
-        print("This is end of the list")
-        print("*****************************")
+        separate()
+        print("This is the end of the list")
+        separate()
         return network_menu()   
     elif choice == "3":
         print("I am option 3 in network menu function")
-        menu_options.port_scan()
+        menu_options.subnet_scan()
     elif choice == "4":
         print("I am option 4 in network menu function")
         main_menu()
     elif choice == "5":
         # choice 5 exits the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
-        print("*****************************")
+        separate()
         # This is network menu choices
         exit(0)
     else:
@@ -247,6 +248,6 @@ if __name__ == '__main__':
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     print("                                    ")
     print_slow(" Welcome  to  AbstrUtility Tool!" )
-    print("                                       ")
+    print("                                    ")
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     main_menu()

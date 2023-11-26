@@ -4,6 +4,7 @@ import winrm
 
 import main
 import menu_options
+
 from printtxtslow import print_slow
 
 
@@ -20,50 +21,66 @@ def windows_session(server_name, username, password, port=5985, server_cert_vali
     return session
 
 
-# LINUX OS SERVICES FUNCTIONS
+# LINUX SERVICES FUNCTIONS
 def linux_allservices():
+    main.log.info("Starting linux server all services display function")
     print("I am linux server all services dislay function")
     server_name, username, password = main.get_credentials()
 
     try:
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        main.log.info(f"Attempting to connect to server: {server_name}")
         ssh_client.connect(server_name, username=username, password=password)
+        main.log.info("SSH connection established successfully")
         stdin, stdout, stderr = ssh_client.exec_command(
             "systemctl --type=service")
         services = str(stdout.read().decode('utf-8'))
         print(services)
+        main.log.info("Successfully retrieved services list")
     except paramiko.AuthenticationException:
-        print(" Authentication failed, please verify your credentials.")
+        error_message = "Authentication failed, please verify your credentials."
+        print(error_message)
+        main.log.error(error_message)
     except paramiko.SSHException as e:
-        print(f"Unable to establish SSH connection: {str(e)}")
+        error_message = f"Unable to establish SSH connection: {str(e)}"
+        print(error_message)
+        main.log.error(error_message)
     except Exception as e:
         print(f"Error occured: {str(e)}")
         main.log.error(f"Error occured: {str(e)}")
     finally:
         ssh_client.close()
+        main.log.info("SSH connection closed")
     return main.linux_service_choice()
 
 
 def linux_last5_reboots():
-    print("I am linux server all services dislay function")
+    main.log.info("Starting linux last 5 reboots  display function")
     server_name, username, password = main.get_credentials()
     try:
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)
+        main.log.info("SSH connection established successfully")
         stdin, stdout, stderr = ssh_client.exec_command("uptime && last reboot | head -n 5")
         services = str(stdout.read().decode('utf-8'))
         print(services)
-        main.log.error("Unknown command error occured")
+        main.log.info("Successfully retrieved services list")
     except paramiko.AuthenticationException:
-        print(" Authentication failed, please verify your credentials.")
+        error_message = "Authentication failed, please verify your credentials."
+        print(error_message)
+        main.log.error(error_message)
     except paramiko.SSHException as e:
-        print(f"Unable to establish SSH connection: {str(e)}")
+        error_message = f"Unable to establish SSH connection: {str(e)}"
+        print(error_message)
+        main.log.error(error_message)
     except Exception as e:
         print(f"Error occured: {str(e)}")
+        main.log.error(f"Error occured: {str(e)}")
     finally:
         ssh_client.close()
+        main.log.info("SSH connection closed")
     return main.linux_service_choice()
 
 
@@ -135,24 +152,29 @@ def linx_resources():
     return main.linux_service_choice()
 
 
-# WINDOWS OS SERVICES FUNCTIONS
+# WINDOWS SERVICES FUNCTIONS
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
+    main.log.info("Starting windows all services display")
     server_name, username, password = main.get_credentials()
+    main.log.info(f"Credentials for server: {server_name}")
     # Create a WinRM session
+    main.log.info("Creating winrm session")
     session = windows_session(server_name, username, password)
     # PowerShell command to get all running services
     get_services = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
     # Execute the command on the remote server
+    main.log.info("Executing command to display services")
     response = session.run_ps(get_services)
     # Check the output and error
     if response.status_code == 0:
+        main.log.info("Successfully display running services")
         print("\nList of Running Services:\n")
         print(response.std_out.decode())
     else:
-        print("Failed to fetch running services.")
-        print("Error:", response.std_err.decode())
-        main.log.error("Error:", response.std_err.decode())
+        error_message = "Failed to fetch running services. Error: " + response.std_err.decode()
+        print(error_message)
+        main.log.error(error_message)
     return main.windows_service_choice()
 
 
@@ -184,12 +206,14 @@ def windows_IIS():
 
 def windows_app_pools():
     print_slow("I am windows app pool service restart, and I am under construction.")
-    '''session = windows_session()
+    session = windows_session(server_name, username, password)
+    server_name, username, password = main.get_credentials()
+    session = test3.windows_app_pools()
     app_pool_services = 'Import-Module WebAdministration; Get-WebAppPool | Select-Onject -ExpandProperty Name'
     output = session.run_ps(
         app_pool_services).std_out.decode().strip().splitlines()
-    return output'''
-    return main.windows_service_choice()
+    return output
+    #return main.windows_service_choice()
 
 
 def windows_service_input():

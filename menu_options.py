@@ -3,7 +3,6 @@ import os
 import getpass
 import socket
 import subprocess
-import ipaddress
 import paramiko
 
 from contextlib import contextmanager
@@ -72,8 +71,7 @@ def lunux_restart():
         else:
             main.log.info("Server reboot cancelled by user.")
             return linux_server_interaction()
-
-        
+       
 # Linux server shutdown function
 def linux_shutdown():
     #linux shutdown function
@@ -120,6 +118,7 @@ def linux_shutdown():
 
 # Windowsserver restart function
 def windows_server_reboot(session):
+    # windows restart function 
     try:
         # functions which intiates windows server restart
         main.log.info("Initiating server reboot process.")
@@ -138,22 +137,23 @@ def windows_server_reboot(session):
 
 # Windows server shutdown function
 def windows_server_shutdown(session):
-    # functions which intiates windows server shutdown
+    # windows restart function 
     try:
+        # functions which intiates windows server restart
         main.log.info("Initiating server shutdown process.")
-        #execture shutdown
+        #execture reboot
         shutdown_command = "shutdown /s /t 0"
         result = session.run_cmd(shutdown_command)
-        
         if result.status_code == 0:
             main.log.info("Shutdown command executed successfully.")
         else:
-            main.log.error(f"Shutdown command failed with status code {result.status_code}.") 
+            main.log.error(f"Shutdows command failed with status code {result.status_code}.") 
         # Return the results          
-        result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
+        return result.status_code, result.std_out.decode().strip(), result.std_err.decode().strip()
     except Exception as e:
-        main.log.error(f"An error occurred during server shutdown: {e}")
+        main.log.error(f"An error occurred during server restart: {e}")
         raise  
+
 
 # LINUX SERVER MENU FUNCTIONS
 def linux_server_interaction():
@@ -181,14 +181,13 @@ def linux_server_interaction():
         errorexit("Wrong choice of the menu.")
     return int(choice)
 
-
 # WINDOWS SERVER MENU FUNCTIONS
 def windows_server_interaction():
     # This windows server menu function, which displays the server options given to the user
     print("                             ")
     print_slow("Windows Server Actions Menu, please use only numbers (1/2/3/4) for this menu")
     print("*****************************")
-    print("1. Windows Restart\n2. Windows Shutdown\n3. Previus Menu\n4. Quit")
+    print("\n1. Windows Restart\n2. Windows Shutdown\n3. Previus Menu\n4. Quit")
     print("*****************************")
     choice = input("Enter desired action: ")
     if choice == "1":
@@ -217,12 +216,14 @@ def windows_server_interaction():
         server_name, username, password = main.get_credentials()
         # here the program calls the windows session function, which is locted is services_options.py file
         session = services_options.windows_session(server_name, username, password)
+        # Make confurmation that user would like to proceed with the choice
         confirm = input(
             "Are you sure you want to shutdown the server? (yes/no): ")
         if confirm.lower() == "yes":
             try:
                 # if the user confirms the shutdown, the following command runs, which calls server shutdown function         
                 status_code, stdout, stderr = windows_server_shutdown(session)
+                # this print is showning execution status if status is 0, that mean the command has been executed successfuly
                 print(f"Command executed with status code: {status_code}")
                 main.log.error(f"Output: {stdout}")
                 if stderr:
@@ -234,7 +235,7 @@ def windows_server_interaction():
     elif choice == "3":
         # choice 3 takes user to the previous menu
         return main.windows_server_menu()
-    elif choice == "4.":
+    elif choice == "4":
         # choice 4 exits the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         print("*****************************")
@@ -243,7 +244,6 @@ def windows_server_interaction():
         main.logging.error("Invalid server menu option")
         errorexit("Wrong choice of the menu.")
     return int(choice)
-
 
 # NETWORK MENU FUNCTIONS
 def pathping_scan():
@@ -260,7 +260,6 @@ def pathping_scan():
         main.log.error("Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again.") 
         return f"Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again: {e.stderr}" 
 
-
 def nslookup(ip_address):
        #this is nslookup function which is called from network menu, option 2
         results = {}
@@ -272,7 +271,6 @@ def nslookup(ip_address):
                 results[ip] = "no host found"    
         return results      
         
-
-def port_scan():
+def subnet_scan():
     print("I am port scanning function and I am under construction")
     return main.network_menu()

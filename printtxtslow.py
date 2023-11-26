@@ -8,8 +8,8 @@ def print_slow(s):
         time.sleep(0.7/10)
         
 def separate():
-    for letter in "****************************************************":
+    for letter in "*************************":
         sys.stdout.write(letter)
         sys.stdout.flush()
-        time.sleep(0.5/10)
+        time.sleep(0.3/10)
     print()
