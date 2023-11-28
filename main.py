@@ -17,16 +17,16 @@ log = logging.getLogger("abstrutility.log")
 
 def get_credentials():
     # This Function defines the connection information, server name, username and password
-    server_name = input("Enter Server Name: ")
+    #server_name = input("Enter Server Name: ")
     username = input("Enter your username: ")
     password = getpass.getpass("Enter your password: ")
-    return server_name, username.lower(), password
+    return  username.lower(), password
 
 
 # Main MENU FUNCTIONS
 def main_menu():
     # This is AbsrUtility Toolmain menu
-    print_slow("\nMain Menu, please use only numbers (1/2/3) for this menu")
+    print("\nMain Menu, use only numbers: ")
     separate()
     print("1. Server Menu\n2. Network Menu\n3. Exit")
     separate()
@@ -43,14 +43,15 @@ def main_menu():
         exit(0)
     else:
         log.error("Invalid choice in main  menu.")
-        print(" Invalid choice.")
+        print("Use only numbers /1/2/3 for this menu.")
+        return main_menu()
     return int(choice)
 
 # SERVERS Operating system choice Menu
 def server_os():
     # This functions makes user to define which OS he is going to work with
     print("                           ")
-    print_slow("\nServer Menu, please use only numbers (1/2/3/4) for this menu")
+    print("\nServer Menu, use only numbers: ")
     separate()
     print("Choose server type:\n1. Linux Server Menu\n2. Windows Server Menu\n3. Previous Menu\n4. Quit")
     separate()
@@ -71,14 +72,15 @@ def server_os():
         exit(0)
     else:
         log.error("Invalid server menu")
-        menu_options.errorexit("Wrong choice of the menu.")
+        print("Use only numbers /1/2/3/4 for this menu.")
+        return server_os()
     return int(choice)
 
 # LINUX SERVER MENU FUNCTIONS
 def linux_server_menu():
     # this is linux server menu function, which will present the user with linux options
     print("                             ")
-    print_slow("Linux Server Menu, please use only numbers (1/2/3/4) for this menu")
+    print("Linux Server Menu, use only numbers: ")
     separate()
     print("1. Linux Server Options Menu\n2. Linux Services Menu\n3. Previous Menu\n4. Quit")
     separate()
@@ -99,14 +101,15 @@ def linux_server_menu():
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
-        menu_options.errorexit("Wrong choice of the menu.")
+        print("Use only numbers /1/2/3/4 for this menu.")
+        return linux_server_menu()
     return int(choice)
 
 # WINDOWS SERVER MENU FUNCTIONS
 def windows_server_menu():
     # this is windows server menu function, which will present the user with windows options
     print("                             ")
-    print_slow("Windows Server Menu, please use only numbers (1/2/3/4) for this menu")
+    print("Windows Server Menu, use only numbers: ")
     separate()
     print("1. Windows Server Options Menu\n2. Windows Services Options Menu\n3. Previous Menu\n4. Quit")
     separate()
@@ -127,7 +130,8 @@ def windows_server_menu():
         exit(0)
     else:
         log.error("Invalid choice in server menu.")
-        menu_options.errorexit("nvalid choice in Server Menu.")
+        print("Use only numbers /1/2/3/4/ for this menu.")
+        return windows_server_menu()
     return int(choice)
 
 
@@ -135,7 +139,7 @@ def windows_server_menu():
 def linux_service_choice():
     # This is linux services menu choice, where the user can choose from the given services choices
     print("                             ")
-    print_slow("Linux Services Menu, please use only numbers (1/2/3/4/5) for this menu")
+    print("Linux Services Menu, use only numbers: ")
     separate()
     print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. Previous Menu\n5. Quit")
     separate()
@@ -159,16 +163,17 @@ def linux_service_choice():
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
-        menu_options.errorexit("Invalid choice in the Linux Service Menu.")
+        print("Use only numbers /1/2/3/4/5 for this menu.")
+        return linux_service_choice()
     return int(choice)
 
 # WINDOWS SERVICES FUNCTIONS
 def windows_service_choice():
     # This is windows service menu choices function
     print("                             ")
-    print_slow("Windows Services Menu, please use only numbers (1/2/3/4/5/6) for this menu")
+    print("Windows Services Menu, use only numbers: ")
     separate()
-    print_slow("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Provide Service Name\n5. Previous Menu\n6. Quit")
+    print("1. Display all services\n2. IIS Restart\n3. App Pool Restart\n4. Provide Service Name\n5. Previous Menu\n6. Quit")
     separate()
     choice = input("Enter an option: ")
     if choice == "1":
@@ -187,6 +192,7 @@ def windows_service_choice():
     elif choice == "5":
         return windows_server_menu()
     elif choice == "6":
+        print("                      ")
         # choice 6 exits the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
         print("*****************************")
@@ -194,14 +200,15 @@ def windows_service_choice():
     else:
         log.error("Invalid choice in service choice menu.")
         print("Invalid choice.")
-        menu_options.errorexit("Invalid choice in the Windows Service Menu.")
+        print("Use only numbers /1/2/3/4/5/6 for this menu.")
+        return windows_service_choice
     return int(choice)
 
 # NETWORK MENU FUNCTIONS
 def network_menu():
     # This is network menu choices
     print("                             ")
-    print_slow("Network Menu, please use only numbers (1/2/3/4/5) for this menu")
+    print("Network Menu, use only numbers: ")
     separate()
     print("1. Pathping\n2. Nslookup\n3. Subnet Scanning\n4. Previous Menu\n5. Quit")
     separate()
@@ -239,7 +246,8 @@ def network_menu():
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
-        menu_options.errorexit("Invalid choice in the Network Menu.")
+        print("Use only numbers /1/2/3/4/5 for this menu.")
+        return network_menu()
     return int(choice)
 
 

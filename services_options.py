@@ -25,8 +25,8 @@ def windows_session(server_name, username, password, port=5985, server_cert_vali
 def linux_allservices():
     main.log.info("Starting linux server all services display function")
     print("I am linux server all services dislay function")
-    server_name, username, password = main.get_credentials()
-
+    server_name = input("Enter Server Name: ") 
+    username, password = main.get_credentials()
     try:
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -57,7 +57,8 @@ def linux_allservices():
 
 def linux_last5_reboots():
     main.log.info("Starting linux last 5 reboots  display function")
-    server_name, username, password = main.get_credentials()
+    server_name = input("Enter Server Name: ")
+    username, password = main.get_credentials()
     try:
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -85,7 +86,8 @@ def linux_last5_reboots():
 
 
 def linux_JVM():
-    server_name, username, password = main.get_credentials()
+    server_name = input("Enter Server Name: ") 
+    username, password = main.get_credentials()
     sudo_password = getpass.getpass("Enter your sudo password: ")
     try:
         ssh_client = paramiko.SSHClient()
@@ -156,7 +158,8 @@ def linx_resources():
 def windows_allservices():
     # This is windows functions wich is calling all windows  service
     main.log.info("Starting windows all services display")
-    server_name, username, password = main.get_credentials()
+    server_name = input("Enter Server Name: ") 
+    username, password = main.get_credentials()
     main.log.info(f"Credentials for server: {server_name}")
     # Create a WinRM session
     main.log.info("Creating winrm session")
@@ -175,6 +178,7 @@ def windows_allservices():
         error_message = "Failed to fetch running services. Error: " + response.std_err.decode()
         print(error_message)
         main.log.error(error_message)
+    input("Press enter to continue...")    
     return main.windows_service_choice()
 
 
@@ -182,10 +186,11 @@ def windows_IIS():
     print("I am IIS restart")
     # Get connection details from the user
     # server_name = input("Enter the remote server IP: ").strip()
-    server_name, username, password = main.get_credentials()
+    server_name = input("Enter Server Name: ")
+    username, password = main.get_credentials()
 
     # Create a WinRM session
-    session = windows_session()  # winrm.Session(
+    session = windows_session(server_name, username, password)  # winrm.Session(
 
     # PowerShell command to restart IIS
     restart_iis = 'iisreset /restart'
@@ -206,9 +211,10 @@ def windows_IIS():
 
 def windows_app_pools():
     print_slow("I am windows app pool service restart, and I am under construction.")
+    server_name = input("Enter Server Name: ")
     session = windows_session(server_name, username, password)
-    server_name, username, password = main.get_credentials()
-    session = test3.windows_app_pools()
+    username, password = main.get_credentials()
+    session = windows_session()
     app_pool_services = 'Import-Module WebAdministration; Get-WebAppPool | Select-Onject -ExpandProperty Name'
     output = session.run_ps(
         app_pool_services).std_out.decode().strip().splitlines()
