@@ -1,7 +1,7 @@
 import sys
 import os
 import getpass
-import socket
+import scapy
 import subprocess
 import paramiko
 
@@ -193,7 +193,6 @@ def linux_server_interaction():
         return main.linux_server_menu()
     elif choice == "4":
         print_slow("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
-        print("Linux Server Actions Menu")
         exit(0)
     else:
         main.logging.debug("Invalid server menu")
@@ -257,9 +256,31 @@ def nslookup(ip_address):
                 results[ip] = hostname
             except socket.herror:
                 results[ip] = "no host found" 
-                main.log.info(f"nslookup filed for {ip}: host not found.")   
+                main.log.info(f"nslookup result for {ip}: host not found.")   
         return results      
         
 def subnet_scan():
-    print("I am port scanning function and I am under construction")
+    # subnet scan
+    input_ips = input("Enter IP addresses separated by comma: ")
+    ip_list = input_ips.split(',')
+    active_hosts = []
+    for ip_address in ip_list:
+         # removes white space
+        ip_address = ip_address.strip()
+        # Build ICMP packet 
+        packet = IP(dst=ip_address)/ICMP()
+        # Send the packet and wait for a reply
+        reply = sr1(packet, timeout=3, verbose=False)
+        if reply:
+            print(f"Host {ip_address} is UP.")
+            active_hosts.append(ip_address)
+        else:
+            print(f"Host {ip_address} is DOWN.")
+    
+    print("\nActive hosts:")
+    for host in active_hosts:
+        print(host)
+
+    
+    
     return main.network_menu()

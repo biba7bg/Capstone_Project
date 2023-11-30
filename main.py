@@ -1,13 +1,15 @@
 import logging
 import getpass
 
+
 import menu_options
 import services_options
 from printtxtslow import print_slow
 from printtxtslow import separate
 
-# This is the start page in AbstrUtility Tool.
 
+
+# This is the start page in AbstrUtility Tool.
 
 
 logging.basicConfig(level=logging.INFO, filename="abstrutility.log",
@@ -25,17 +27,20 @@ def get_credentials():
 
 # Main MENU FUNCTIONS
 def main_menu():
-    # This is AbsrUtility Toolmain menu
+    # This is AbsrUtility Tool main menu
     print("\nMain Menu, use only numbers: ")
     separate()
     print("1. Server Menu\n2. Network Menu\n3. Exit")
     separate()
     choice = input(" \nPlease chose an option: ")
     if choice == "1":
+        # calling server menu
         server_os()
     elif choice == "2":
+        # caling network menu
         network_menu()
     elif choice == "3":
+        # exits the program
         print("                                    ")
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
         print("                                    ")
@@ -60,7 +65,7 @@ def server_os():
         # if choice 1 is selected, the program calls  linux server menu function
         linux_server_menu()
     elif choice == "2":
-        # if choice 1 is selected, the program calls  windowsserver menu function
+        # if choice 1 is selected, the program calls  windows server menu function
         windows_server_menu()
     elif choice == "3":
         # return to main menu
@@ -141,7 +146,7 @@ def linux_service_choice():
     print("                             ")
     print("Linux Services Menu, use only numbers: ")
     separate()
-    print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. Previous Menu\n5. Quit")
+    print("1. Display all running services\n2. Last 5 reboots\n3. JVM restart\n4. List Server Resources\n5. Previous Menu\n6. Quit")
     separate()
     choice = input(" Please enter your service choice: ")
     if choice == "1":
@@ -154,16 +159,20 @@ def linux_service_choice():
         # this choice takes the user to restart JVM, the function for this is in the services_option.py  file
         services_options.linux_JVM()
     elif choice == "4":
+        # List all resiurces
+        services_options.linux_resources()
+    elif choice == "5":
         # choice 4 takes user to the previous menu
         return linux_server_menu()
-    elif choice == "5":
+    elif choice == "6":
         # choice 5 exits the program
+        print("                       ")
         print_slow("You have decided to exit. Thanks for using AbstrUtility, see you soon.")
         separate()
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
-        print("Use only numbers /1/2/3/4/5 for this menu.")
+        print("Use only numbers /1/2/3/4/5/6 for this menu.")
         return linux_service_choice()
     return int(choice)
 
@@ -177,25 +186,25 @@ def windows_service_choice():
     separate()
     choice = input("Enter an option: ")
     if choice == "1":
-        print("I am  option 1 in windows_service_choice")
+        # this choice takes the user to call all running services, the function for this is in the services_option.py file
         services_options.windows_allservices()
-        # print(test2.mock_display_services("test_server"))
     elif choice == "2":
-        print("I am option 2 in windows_service_choice")
+        # this choice takes the user to IIS restart, the function for this is in the services_option.py  file
         services_options.windows_IIS()
     elif choice == "3":
-        print("I am  App Pool Restart in windows_service_choice")
+        # this choice takes the user to App pool restart, the function for this is in the services_option.py  file
         services_options.windows_app_pools()
     elif choice == "4":
+        # this choice takes the user to restart service on demand, the function for this is in the services_option.py  file
         print("I am  option 4 in windows_service_choice")
         services_options.windows_service_input()
     elif choice == "5":
         return windows_server_menu()
     elif choice == "6":
         print("                      ")
-        # choice 6 exits the program
+        # choice to exit the program
         print_slow("You have decided to exit. Thanks for using AbstrUtility Tool, see you soon.")
-        print("*****************************")
+        separate()
         exit(0)
     else:
         log.error("Invalid choice in service choice menu.")
@@ -226,17 +235,18 @@ def network_menu():
         ip_list = input("Enter IP Addresses separated by comma: ").split(",")
         ip_list = [ip.strip() for ip in ip_list]# remove extra spaces
         lookup_results = menu_options.nslookup(ip_list)
+        separate()
         for ip, hostname in lookup_results.items():
             print(f"{ip}: {hostname}")   
-        separate()
-        print("This is the end of the list")
+        print("                           ")
+        print_slow("This is the end of the list")
         separate()
         return network_menu()   
     elif choice == "3":
-        print("I am option 3 in network menu function")
+        # option 3 subnetscan is calling the function, which is defined in menu_options.py file
         menu_options.subnet_scan()
     elif choice == "4":
-        print("I am option 4 in network menu function")
+        # option 4 takes user to previous menu
         main_menu()
     elif choice == "5":
         # choice 5 exits the program
