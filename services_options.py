@@ -4,11 +4,10 @@ import winrm
 
 import main
 import menu_options
+import printtxtslow
 
-from printtxtslow import print_slow
 
-
-# rempte windows function wich is connecting remote windows host
+# remopte windows function which is connecting remote windows host
 def windows_session(server_name, username, password, port=5985, server_cert_validation='ignore'):
     # this functions is for creating remote connection to windows server
     session_url = f"http://{server_name}:{port}/wsman"
@@ -23,22 +22,27 @@ def windows_session(server_name, username, password, port=5985, server_cert_vali
 
 # LINUX SERVICES FUNCTIONS
 def linux_allservices():
+    # lists all services function 
     main.log.info("Starting linux server all services display function")
     print("I am linux server all services dislay function")
+    # collecting server name and login info
     server_name = input("Enter Server Name: ") 
     username, password = main.get_credentials()
     try:
+        #created the session
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         main.log.info(f"Attempting to connect to server: {server_name}")
         ssh_client.connect(server_name, username=username, password=password)
         main.log.info("SSH connection established successfully")
+        #sends the command
         stdin, stdout, stderr = ssh_client.exec_command(
             "systemctl --type=service")
         services = str(stdout.read().decode('utf-8'))
         print(services)
         main.log.info("Successfully retrieved services list")
     except paramiko.AuthenticationException:
+        #exception errors collection
         error_message = "Authentication failed, please verify your credentials."
         print(error_message)
         main.log.error(error_message)
@@ -56,18 +60,22 @@ def linux_allservices():
 
 
 def linux_last5_reboots():
+    # lists 5 last reboots function 
     main.log.info("Starting linux last 5 reboots  display function")
     server_name = input("Enter Server Name: ")
     username, password = main.get_credentials()
     try:
+        #created the session
         ssh_client = paramiko.SSHClient()
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)
         main.log.info("SSH connection established successfully")
+        #sends the command
         stdin, stdout, stderr = ssh_client.exec_command("uptime && last reboot | head -n 5")
         services = str(stdout.read().decode('utf-8'))
         print(services)
         main.log.info("Successfully retrieved services list")
+        #exception errors collection
     except paramiko.AuthenticationException:
         error_message = "Authentication failed, please verify your credentials."
         print(error_message)
@@ -149,9 +157,44 @@ def linux_JVM():
     return main.linux_service_choice()
 
 
-def linx_resources():
-    print_slow(" I am linux resources display, and I am under construction")
+def linux_resources():
+    # lists 5 last reboots function 
+    main.log.info("Starting linux list all resources function")
+    server_name = input("Enter Server Name: ")
+    username, password = main.get_credentials()
+    try:
+        #created the session
+        ssh_client = paramiko.SSHClient()
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_client.connect(server_name, username=username, password=password, look_for_keys=False, allow_agent=False)
+        main.log.info("SSH connection established successfully")
+        # Commands to list resources 
+        commands = ["cat /proc/cpuinfo", "free -m", "df -h", "top -b -n 1"]
+        for command in commands:
+            stdin, stdout, stderr = ssh_client.exec_command(command)
+            print(f"Output of '{command}':")
+            print(stdout.read().decode())
+            print(stderr.read().decode())
+        main.log.info("Successfully retrieved services list")
+        printtxtslow.print_slow("This is the end of the list")
+        printtxtslow.separate()
+        #exception errors collection
+    except paramiko.AuthenticationException:
+        error_message = "Authentication failed, please verify your credentials."
+        print(error_message)
+        main.log.error(error_message)
+    except paramiko.SSHException as e:
+        error_message = f"Unable to establish SSH connection: {str(e)}"
+        print(error_message)
+        main.log.error(error_message)
+    except Exception as e:
+        print(f"Error occured: {str(e)}")
+        main.log.error(f"Error occured: {str(e)}")
+    finally:
+        ssh_client.close()
+        main.log.info("SSH connection closed")
     return main.linux_service_choice()
+
 
 
 # WINDOWS SERVICES FUNCTIONS
@@ -169,6 +212,8 @@ def windows_allservices():
     # Execute the command on the remote server
     main.log.info("Executing command to display services")
     response = session.run_ps(get_services)
+    print("This is the end of the list ")
+    printtxtslow.separate()
     # Check the output and error
     if response.status_code == 0:
         main.log.info("Successfully display running services")
@@ -206,23 +251,78 @@ def windows_IIS():
     else:
         print("Failed to restart IIS.")
         print("Error:", response.std_err.decode())
-        return main.windows_server_menu()
+    return main.windows_service_choice()
 
 
 def windows_app_pools():
-    print_slow("I am windows app pool service restart, and I am under construction.")
-    server_name = input("Enter Server Name: ")
-    session = windows_session(server_name, username, password)
+    # This is windows functions which restarts app pool services
+    main.log.info("Starting windows all services display")
+    server_name = input("Enter Server Name: ") 
     username, password = main.get_credentials()
-    session = windows_session()
-    app_pool_services = 'Import-Module WebAdministration; Get-WebAppPool | Select-Onject -ExpandProperty Name'
-    output = session.run_ps(
-        app_pool_services).std_out.decode().strip().splitlines()
-    return output
-    #return main.windows_service_choice()
+    main.log.info(f"Credentials for server: {server_name}")
+    # Create a WinRM session
+    main.log.info("Creating winrm session")
+    try:
+        session = windows_session(server_name, username, password)
+        # PowerShell command to get all running services
+        ps_script = "Import-Module WebAdministration; Get-WebAppPoolState"
+        response = session.run_ps(ps_script)
+        # Execute the command on the remote server
+        main.log.info("Executing command to display services")
+        if response.status_code == 0:
+            print("List of Application Pools:\n")
+            print(response.std_out.decode())
+        else:
+            print("Failed to list application pools.")
+            print("Error:", response.std_err.decode())
+    except Exception as e:
+        print(f"Error connecting to server: {str(e)}")
+    input("Press enter to continue...")    
+    return main.windows_service_choice()
 
 
 def windows_service_input():
-    print(" I am windows service input display, and I am under construction.")
+    # This is windows functions allows user to restart service on demand
+    main.log.info("Starting windows all services display")
+    server_name = input("Enter Server Name: ") 
+    username, password = main.get_credentials()
+    service_name = input("Enter the service name: ")
+    main.log.info(f"Credentials for server: {server_name}")
+    # Create a WinRM session
+    main.log.info("Creating winrm session")
+    try:
+        session = windows_session(server_name, username, password)
+        # Check current service status
+        ps_script = f"Get-Service -Name {service_name} | Select-Object -Property Status"
+        response = session.run_ps(ps_script)
+        if response.status_code == 0:
+            print(f"Current status of {service_name}: {response.std_out.decode().strip()}")
+        else:
+            print("Failed to get service status.")
+            print("Error:", response.std_err.decode())
+            return
+
+        # Ask user for action
+        action = input(f"What action would you like to perform on {service_name} (start/stop/restart): ").lower()
+
+        # Perform the action
+        if action in ["start", "stop", "restart"]:
+            ps_script = f"{action.capitalize()}-Service -Name {service_name}"
+            response = session.run_ps(ps_script)
+            if response.status_code == 0:
+                print(f"Service {service_name} {action}ed successfully.")
+            else:
+                print(f"Failed to {action} service {service_name}.")
+                print("Error:", response.std_err.decode())
+        else:
+            print("Invalid action.")
+    except Exception as e:
+        print(f"Error connecting to server: {str(e)}")
+    input("Press enter to continue...")    
+    return main.windows_service_choice()
+
+    
+
+
     return main.windows_service_choice()
 
