@@ -1,6 +1,8 @@
 import paramiko
+import subprocess
 import getpass
 import winrm
+
 
 import main
 import menu_options
@@ -199,32 +201,39 @@ def linux_resources():
 
 # WINDOWS SERVICES FUNCTIONS
 def windows_allservices():
-    # This is windows functions wich is calling all windows  service
-    main.log.info("Starting windows all services display")
-    server_name = input("Enter Server Name: ") 
-    username, password = main.get_credentials()
-    main.log.info(f"Credentials for server: {server_name}")
-    # Create a WinRM session
-    main.log.info("Creating winrm session")
-    session = windows_session(server_name, username, password)
-    # PowerShell command to get all running services
-    get_services = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
-    # Execute the command on the remote server
-    main.log.info("Executing command to display services")
-    response = session.run_ps(get_services)
-    print("This is the end of the list ")
-    printtxtslow.separate()
-    # Check the output and error
-    if response.status_code == 0:
-        main.log.info("Successfully display running services")
-        print("\nList of Running Services:\n")
-        print(response.std_out.decode())
-    else:
-        error_message = "Failed to fetch running services. Error: " + response.std_err.decode()
-        print(error_message)
+    try:
+        # This is windows functions wich is calling all windows  service
+        main.log.info("Starting windows all services display")
+        server_name = input("Enter Server Name: ") 
+        username, password = main.get_credentials()
+        main.log.info(f"Credentials for server: {server_name}")
+    
+        # Create a WinRM session
+        main.log.info("Creating winrm session")
+        session = windows_session(server_name, username, password)
+
+        # PowerShell command to get all running services
+        get_services = 'Get-Service | Format-Table DisplayName, Status -AutoSize'
+        # Execute the command on the remote server
+        main.log.info("Executing command to display services")
+        response = session.run_ps(get_services)
+        print("This is the end of the list ")
+        printtxtslow.separate()
+        # Check the output and error
+        if response.status_code == 0:
+            main.log.info("Successfully display running services")
+            print("\nList of Running Services:\n")
+            print(response.std_out.decode())
+        else:
+            error_message = "Failed to fetch running services. Error: " + response.std_err.decode()
+            print(error_message)
+            main.log.error(error_message)
+    except Exception as e:
+        error_message = f"Unexpected error occured: {str(e)}" 
         main.log.error(error_message)
-    input("Press enter to continue...")    
-    return main.windows_service_choice()
+    finally:       
+        input("Press enter to continue...")    
+        return main.windows_service_choice()
 
 
 def windows_IIS():
@@ -265,7 +274,7 @@ def windows_app_pools():
     try:
         session = windows_session(server_name, username, password)
         # PowerShell command to get all running services
-        ps_script = "Import-Module WebAdministration; Get-WebAppPoolState"
+        ps_script = "Import-Module WebAdministration; get-iisapppool | select name, state"
         response = session.run_ps(ps_script)
         # Execute the command on the remote server
         main.log.info("Executing command to display services")
@@ -275,54 +284,91 @@ def windows_app_pools():
         else:
             print("Failed to list application pools.")
             print("Error:", response.std_err.decode())
+        action = input(" Enter apppool action (start/stop/restart): ").strip().lower()
+        if action not in ["start", "stop", "restart"]:
+            print("invalid option ") 
+            return windows_app_pools()   
     except Exception as e:
         print(f"Error connecting to server: {str(e)}")
+    def restart_app_pool(service_name):
+        confirmation = input("Are you sure you want to restart the AppPool service? (yes/no): ")
+        if confirmation != "yes":
+            return "Restart cancel by user"
+        try:
+            session = windows_session(server_name, username, password)
+            if action == "restart":
+                #powershell command to restart the  app pool service
+                command = f"Import-Module Web Administration; Restart-WebAppPool -Name '{service_name}'"
+                result = session.run_ps(command)
+                return f"Service '{service_name}' restarted successfully:\n{result}"
+            elif action == "stop":
+                #powershell command to stop the app pool service
+                command = f"Import-Module Web Administration; Stop-WebAppPool -Name '{service_name}'"
+                result = session.run_ps(command)
+                return f"Service '{service_name}' stopped successfully:\n{result}"
+            else:
+                #powershell command to start the app pool service
+                command = f"Import-Module Web Administration; Start-WebAppPool -Name '{service_name}'"
+                result = session.run_ps(command)
+                return f"Service '{service_name}' started successfully:\n{result}"
+        except subprocess.CalledProcessError as e:
+            return f"Error stopping service '{service_name}': {e.output}"
+        except Exception as e:
+            return f"Unknown error accured: {str(e)}"
+    service_name = input("Enter service name: ")
+    result = restart_app_pool(service_name)
+    print(result)    
+
     input("Press enter to continue...")    
     return main.windows_service_choice()
 
 
 def windows_service_input():
-    # This is windows functions allows user to restart service on demand
-    main.log.info("Starting windows all services display")
-    server_name = input("Enter Server Name: ") 
-    username, password = main.get_credentials()
-    service_name = input("Enter the service name: ")
-    main.log.info(f"Credentials for server: {server_name}")
-    # Create a WinRM session
-    main.log.info("Creating winrm session")
     try:
-        session = windows_session(server_name, username, password)
-        # Check current service status
-        ps_script = f"Get-Service -Name {service_name} | Select-Object -Property Status"
-        response = session.run_ps(ps_script)
-        if response.status_code == 0:
-            print(f"Current status of {service_name}: {response.std_out.decode().strip()}")
-        else:
-            print("Failed to get service status.")
-            print("Error:", response.std_err.decode())
-            return
-
-        # Ask user for action
-        action = input(f"What action would you like to perform on {service_name} (start/stop/restart): ").lower()
-
-        # Perform the action
-        if action in ["start", "stop", "restart"]:
-            ps_script = f"{action.capitalize()}-Service -Name {service_name}"
+        # This is windows functions allows user to restart service on demand
+        main.log.info("Starting windows all services display")
+        server_name = input("Enter Server Name: ") 
+        username, password = main.get_credentials()
+        service_name = input("Enter the service name: ")
+        main.log.info(f"Credentials for server: {server_name}")
+        # Create a WinRM session
+        main.log.info("Creating winrm session")
+        try:
+            session = windows_session(server_name, username, password)
+            # Check current service status
+            ps_script = f"Get-Service -Name {service_name} | Select-Object -Property Status"
             response = session.run_ps(ps_script)
             if response.status_code == 0:
-                print(f"Service {service_name} {action}ed successfully.")
+                print(f"Current status of {service_name}: {response.std_out.decode().strip()}")
             else:
-                print(f"Failed to {action} service {service_name}.")
+                print("Failed to get service status.")
                 print("Error:", response.std_err.decode())
-        else:
-            print("Invalid action.")
-    except Exception as e:
-        print(f"Error connecting to server: {str(e)}")
-    input("Press enter to continue...")    
-    return main.windows_service_choice()
+                main.log.error(f"Failed to get service status. Error: {response.std_err.decode()} ")
+                return
 
+            # Ask user for action
+            action = input(f"What action would you like to perform on {service_name} (start/stop/restart): ").lower()
+
+            # Perform the action
+            if action in ["start", "stop", "restart"]:
+                ps_script = f"{action.capitalize()}-Service -Name {service_name}"
+                response = session.run_ps(ps_script)
+                if response.status_code == 0:
+                    print(f"Service {service_name} {action}ed successfully.")
+                else:
+                    print(f"Failed to {action} service {service_name}.")
+                    print("Error:", response.std_err.decode())
+                    main.log.error(f"Failed to {action} service {service_name}. Error: {response.std_errdecode()}")
+            else:
+                print("Invalid action.")
+        except Exception as e:
+            print(f"Error connecting to server: {str(e)}")
+            main.log.error(f"Error connecting to server: {str(e)}")
+    except Exception as outer_exception:
+        print(f"Unexpected error: {str(outer_exception)}")
+        main.log.error(f"Unexpected error: {str(outer_exception)}")
+    finally:
+        input("Press enter to continue...")    
+        return main.windows_service_choice()
     
-
-
-    return main.windows_service_choice()
 

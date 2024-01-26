@@ -1,11 +1,13 @@
+import socket
 import sys
 import os
 import getpass
 import scapy
 import subprocess
+from contextlib import contextmanager
 import paramiko
 
-from contextlib import contextmanager
+
 
 import main
 import services_options
@@ -236,7 +238,7 @@ def pathping_scan():
     # pathping functionction
     ip_address = input("Please provide the IP Address or hostname: ")
     #defining pathping command 
-    pathping_command = ["pathping", ip_address]
+    pathping_command = ["pathping -q 10 -p 100", ip_address]
     #running the pathping command
     try:
         print("Running pathping, this may take couple of minutes...")
@@ -244,7 +246,9 @@ def pathping_scan():
         return result.stdout
     except subprocess.CalledProcessError as e:
         main.log.error("Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again.") 
-        return f"Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again: {e.stderr}" 
+        return f"Please provde IP address in form of 4 octets(192.xxx.xxx.xxx), and try again: {e.stderr}"
+    except Exception as e:
+        return f"Unexpected error: {str(e)}" 
 
 def nslookup(ip_address):
        #this is nslookup function which is called from network menu, option 2
